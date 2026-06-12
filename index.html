@@ -66,13 +66,16 @@ async function loadData(){
         if(isTrue(r["UBISOFT (P)"]) || isTrue(r["UBISOFT (B)"])) platforms.push("UBISOFT");
         if(isTrue(r["PS4 (P)"])) platforms.push("PS4");
 
+let rawDate = new Date(r["DATE OF ENTRY"]);
+    if (isNaN(rawDate)) rawDate = new Date(0);
+
         return {
             game: r["Game"] || "-",
             accounts,
             platforms,
             status: r["Status"] || "-",
             date: formatDate(r["DATE OF ENTRY"]),
-            rawDate: new Date(r["DATE OF ENTRY"]),
+            rawDate:,
             cover: "" // ✅ NO API → you can fill manually later if you want
         };
     });
