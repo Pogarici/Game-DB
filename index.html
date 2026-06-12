@@ -1,8 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Game Library</title>
+
+<style>
+
+body{
+    margin:0;
+    padding:20px;
+    background:#0f0f0f;
+    color:white;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+h1{ margin:0 0 10px 0; }
+
+.sticky-bar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:#0f0f0f;
+    padding-bottom:10px;
+}
+
+.tools{
+    display:flex;
+    gap:10px;
+    margin:10px 0;
+}
+
+input, select{
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    background:#1e1e1e;
+    color:white;
+}
+
+.controls{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+}
+
+.left-controls,
+.right-controls{
+    display:flex;
+    gap:10px;
+}
+
+.btn{
+    background:#1e1e1e;
+    border:none;
+    color:white;
+    padding:10px 16px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.btn.active{
+    background:#5865f2;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    gap:10px;
+}
+
+.stat{
+    background:#1c1c1c;
+    border-radius:10px;
+    padding:15px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.stat.active{ background:#5865f2; }
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    gap:12px;
+    margin-top:20px;
+}
+
+@media(max-width:1600px){
+    .grid{grid-template-columns:repeat(6,1fr);}
+}
+@media(max-width:1200px){
+    .grid{grid-template-columns:repeat(4,1fr);}
+}
+@media(max-width:800px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+}
+
+.card{
+    background:#1a1a1a;
+    border-radius:12px;
+    overflow:hidden;
+    transition:.2s;
+}
+
+.card:hover{ transform:translateY(-3px); }
+
+.cover{
+    height:140px;
+    background:#222;
+}
+
+.title{ font-weight:bold; padding:10px; }
+
+.accounts,.platforms{
+    padding:0 10px;
+    font-size:12px;
+    color:#bbb;
+    margin-bottom:6px;
+}
+
+.status{
+    padding:0 10px 12px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.finished{ color:#4ade80; }
+.progress{ color:#facc15; }
+.none{ color:white; }
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    display:none;
+    margin-top:20px;
+}
+
+th{ background:#1c1c1c; }
+
+th,td{
+    padding:10px;
+    border-bottom:1px solid #333;
+    text-align:left;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>🎮 Game Library</h1>
+
+<div class="sticky-bar">
+
+    <div class="stats" id="stats"></div>
+
+    <div class="tools">
+        <input type="text" id="search" placeholder="Search game...">
+
+        <select id="sort">
+            <option value="">Sort</option>
+            <option value="az">A‑Z ↑</option>
+            <option value="za">Z‑A ↓</option>
+            <option value="dateAsc">Date ↑</option>
+            <option value="dateDesc">Date ↓</option>
+        </select>
+    </div>
+
+    <div class="controls">
+        <div class="left-controls">
+            <button id="gridBtn" class="btn active">Grid</button>
+            <button id="tableBtn" class="btn">Table</button>
+        </div>
+
+        <div class="right-controls">
+            <button id="pogariciBtn" class="btn">POGARICI</button>
+            <button id="batmanBtn" class="btn">BATMAN</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="grid" class="grid"></div>
+
+<table id="table">
+<thead>
+<tr>
+<th>Game</th>
+<th>Pogarici</th>
+<th>Batman</th>
+<th>Status</th>
+<th>Date Added</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
 <script>
 
 const API_URL = "./games.json";
 
-/* ✅ CACHE */
 const CACHE_KEY = "gameLibraryCache";
 const CACHE_TIME = 24 * 60 * 60 * 1000;
 
@@ -34,13 +234,13 @@ function formatDate(value){
     return `${day}.${month}.${year}`;
 }
 
-/* ✅ LOAD DATA (TRANSFORM YOUR RAW JSON) */
 async function loadData(){
 
     const cached = localStorage.getItem(CACHE_KEY);
 
     if(cached){
         const parsed = JSON.parse(cached);
+
         if(Date.now() - parsed.timestamp < CACHE_TIME){
             games = parsed.data;
             renderStats();
@@ -52,30 +252,78 @@ async function loadData(){
     const res = await fetch(API_URL);
     const data = await res.json();
 
-    /* ✅ TRANSFORM HERE */
-    games = data.map(r => {
+  games = data.map(r => {
 
-        let accounts = [];
-        if(isTrue(r["Pogarici"])) accounts.push("Pogarici");
-        if(isTrue(r["Batman"])) accounts.push("Batman");
+    let accounts = [];
+    if(isTrue(r["Pogarici"])) accounts.push("Pogarici");
+    if(isTrue(r["Batman"])) accounts.push("Batman");
 
-        let platforms = [];
-        if(isTrue(r["EPIC (P)"]) || isTrue(r["EPIC (B)"])) platforms.push("EPIC");
-        if(isTrue(r["STEAM (P)"]) || isTrue(r["STEAM (B)"])) platforms.push("STEAM");
-        if(isTrue(r["GOG (P)"]) || isTrue(r["GOG (B)"])) platforms.push("GOG");
-        if(isTrue(r["UBISOFT (P)"]) || isTrue(r["UBISOFT (B)"])) platforms.push("UBISOFT");
-        if(isTrue(r["PS4 (P)"])) platforms.push("PS4");
+    let platforms = [];
 
-        return {
-            game: r["Game"] || "-",
-            accounts,
-            platforms,
-            status: r["Status"] || "-",
-            date: formatDate(r["DATE OF ENTRY"]),
-            rawDate: new Date(r["DATE OF ENTRY"]),
-            cover: "" // ✅ NO API → you can fill manually later if you want
-        };
-    });
+    let pogariciPlatforms = [];
+    let batmanPlatforms = [];
+
+    // EPIC
+    if(isTrue(r["EPIC (P)"])) {
+        platforms.push("EPIC");
+        pogariciPlatforms.push("EPIC");
+    }
+    if(isTrue(r["EPIC (B)"])) {
+        platforms.push("EPIC");
+        batmanPlatforms.push("EPIC");
+    }
+
+    // STEAM
+    if(isTrue(r["STEAM (P)"])) {
+        platforms.push("STEAM");
+        pogariciPlatforms.push("STEAM");
+    }
+    if(isTrue(r["STEAM (B)"])) {
+        platforms.push("STEAM");
+        batmanPlatforms.push("STEAM");
+    }
+
+    // GOG
+    if(isTrue(r["GOG (P)"])) {
+        platforms.push("GOG");
+        pogariciPlatforms.push("GOG");
+    }
+    if(isTrue(r["GOG (B)"])) {
+        platforms.push("GOG");
+        batmanPlatforms.push("GOG");
+    }
+
+    // UBISOFT
+    if(isTrue(r["UBISOFT (P)"])) {
+        platforms.push("UBISOFT");
+        pogariciPlatforms.push("UBISOFT");
+    }
+    if(isTrue(r["UBISOFT (B)"])) {
+        platforms.push("UBISOFT");
+        batmanPlatforms.push("UBISOFT");
+    }
+
+    // PS4
+    if(isTrue(r["PS4 (P)"])) {
+        platforms.push("PS4");
+        pogariciPlatforms.push("PS4");
+    }
+
+    // remove duplicates (important!)
+    platforms = [...new Set(platforms)];
+
+    return {
+        game: r["Game"] || "-",
+        accounts,
+        platforms,
+        pogariciPlatforms,
+        batmanPlatforms,
+        status: r["Status"] || "-",
+        date: formatDate(r["DATE OF ENTRY"]),
+        rawDate: new Date(r["DATE OF ENTRY"])
+    };
+
+});
 
     localStorage.setItem(CACHE_KEY, JSON.stringify({
         timestamp: Date.now(),
@@ -86,15 +334,12 @@ async function loadData(){
     render();
 }
 
-/* ---- REST OF YOUR CODE (UNCHANGED) ---- */
-
 function renderStats(){
+
     const counts = {EPIC:0,STEAM:0,GOG:0,UBISOFT:0,PS4:0};
 
     games.forEach(g=>{
-        g.platforms.forEach(p=>{
-            if(counts[p] !== undefined) counts[p]++;
-        });
+        g.platforms.forEach(p=> counts[p]++);
     });
 
     stats.innerHTML = "";
@@ -159,7 +404,7 @@ function renderGrid(list){
 
         grid.innerHTML += `
         <div class="card">
-            <div class="cover" style="background-image:url('${g.cover || ""}')"></div>
+            <div class="cover"></div>
             <div class="title">${g.game}</div>
             <div class="accounts">${g.accounts.join(" | ") || "-"}</div>
             <div class="platforms">${g.platforms.join(" | ") || "-"}</div>
@@ -170,12 +415,13 @@ function renderGrid(list){
 
 function renderTable(list){
     tbody.innerHTML = "";
+
     list.forEach(g=>{
         tbody.innerHTML += `
         <tr>
             <td>${g.game}</td>
-            <td>${g.accounts.join(" | ") || "-"}</td>
-            <td>${g.platforms.join(" | ") || "-"}</td>
+            <td>${g.pogariciPlatforms.join(" | ") || "-"}</td>
+            <td>${g.batmanPlatforms.join(" | ") || "-"}</td>
             <td>${g.status}</td>
             <td>${g.date}</td>
         </tr>`;
@@ -194,6 +440,23 @@ document.getElementById("sort").addEventListener("change",render);
 pogariciBtn.addEventListener("click",()=> filterAccount("Pogarici"));
 batmanBtn.addEventListener("click",()=> filterAccount("Batman"));
 
+gridBtn.addEventListener("click",()=>{
+    grid.style.display="grid";
+    table.style.display="none";
+    gridBtn.classList.add("active");
+    tableBtn.classList.remove("active");
+});
+
+tableBtn.addEventListener("click",()=>{
+    grid.style.display="none";
+    table.style.display="table";
+    tableBtn.classList.add("active");
+    gridBtn.classList.remove("active");
+});
+
 loadData();
 
 </script>
+
+</body>
+</html>
