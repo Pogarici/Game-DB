@@ -718,45 +718,64 @@ search.addEventListener("input", ()=>{
   searchTimer = setTimeout(()=>{ render(); }, 160);
 });
 
-/* Update Library button: fetch gamelist.json and embed into page */
+/* Perform update: fetch gamelist.json and embed into page */
+function performUpdate(){
+  return new Promise((resolve)=>{
+    fetch("gamelist.json", { cache: "no-store" })
+      .then(resp=>{
+        if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        return resp.json();
+      })
+      .then(data=>{
+        if(!Array.isArray(data)) throw new Error("Invalid JSON (expected array)");
+
+        // embed into script tag
+        const raw = JSON.stringify(data, null, 0);
+        embeddedDataScript.textContent = raw;
+
+        // save to localStorage for faster reloads
+        try{ localStorage.setItem("embeddedGames", raw); }catch(e){ console.warn("localStorage set failed", e); }
+
+        // update in-memory games and indexes
+        games = data.map(convertRow);
+        fullTotal = data.length;
+        totalBadge.textContent = `${fullTotal} Games`;
+        buildIndexes();
+        updatePlatformCounts();
+        render();
+
+        resolve(true);
+      })
+      .catch(err=>{
+        console.error("Update failed", err);
+        resolve(false);
+      });
+  });
+}
+
+/* Update Library button: manual update trigger */
 updateBtn.addEventListener("click", async ()=>{
   updateBtn.disabled = true;
   updateBtn.textContent = "Updating...";
-  try{
-    const resp = await fetch("gamelist.json", { cache: "no-store" });
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    if(!Array.isArray(data)) throw new Error("Invalid JSON (expected array)");
-
-    // embed into script tag
-    const raw = JSON.stringify(data, null, 0);
-    embeddedDataScript.textContent = raw;
-
-    // save to localStorage for faster reloads
-    try{ localStorage.setItem("embeddedGames", raw); }catch(e){ console.warn("localStorage set failed", e); }
-
-    // update in-memory games and indexes
-    games = data.map(convertRow);
-    fullTotal = data.length;
-    totalBadge.textContent = `${fullTotal} Games`;
-    buildIndexes();
-    updatePlatformCounts();
-    render();
-
+  const success = await performUpdate();
+  if(success){
     updateBtn.textContent = "Updated ✓";
     setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
-  }catch(err){
-    console.error("Update failed", err);
+  } else {
     updateBtn.textContent = "Update Failed";
     setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
     alert("Update failed. Make sure gamelist.json is reachable in the same folder and is valid JSON.");
-  }finally{
-    updateBtn.disabled = false;
   }
+  updateBtn.disabled = false;
 });
 
 /* Initialize on load */
 initializeFromEmbedded();
+
+/* Auto-update from gamelist.json on page load */
+(async ()=>{
+  await performUpdate();
+})();
 
 </script>
 </body>
