@@ -23,7 +23,7 @@ jobs:
           echo "Fetching: $URL"
           TMP=$(mktemp)
           # verbose curl: prints request/response headers to stderr, body to file
-          curl -v -sS -D "$TMP.headers" -o "$TMP.body" "$URL" || true
+          curl -L -v -sS -D "$TMP.headers" -o "$TMP.body" "$URL" || true
           echo "---- RESPONSE HEADERS ----"
           sed -n '1,200p' "$TMP.headers" || true
           echo "---- RESPONSE BODY PREVIEW (first 1000 bytes) ----"
