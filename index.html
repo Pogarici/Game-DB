@@ -13,7 +13,6 @@
     padding:20px;
   }
 
-  /* HEADER: title left, total count right on same line */
   .header-row{
       display:flex;
       align-items:center;
@@ -28,7 +27,6 @@
       font-weight:700;
   }
 
-  /* PLATFORM FILTER CARDS */
   .stats{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
@@ -57,7 +55,6 @@
   .stat .plat-name{font-weight:700;}
   .stat .plat-counts{font-size:18px;color:#ccc;font-weight:700;}
 
-  /* SEARCH */
   .filters{
       display:flex;
       gap:10px;
@@ -75,7 +72,6 @@
       min-width:200px;
   }
 
-  /* VIEW + ACCOUNT BUTTON ROW */
   .view-row{
     display:flex;
     align-items:center;
@@ -99,7 +95,6 @@
   button.active{background:#5865f2;}
   button#updateBtn{ background:#2a2a2a; font-weight:700; }
 
-  /* GRID */
   .grid{
       display:grid;
       grid-template-columns:repeat(6,1fr);
@@ -135,7 +130,6 @@
   .progress{color:#facc15;}
   .none{color:#777;}
 
-  /* TABLE */
   table{
       width:100%;
       border-collapse:collapse;
@@ -150,7 +144,6 @@
   }
   th{ background:#1c1c1c; font-weight:600; }
 
-  /* highlighted row */
   .row-highlight{
       animation: highlightFlash 2.5s ease-in-out;
       box-shadow:0 0 18px rgba(88,101,242,0.25) inset;
@@ -162,7 +155,6 @@
       100%{ background: rgba(88,101,242,0.00); }
   }
 
-  /* responsive table on small screens */
   @media(max-width:700px){
       table, thead, tbody, th, td, tr { display:block; }
       thead { display:none; }
@@ -181,10 +173,9 @@
 
 <div class="header-row">
   <h1>🎮 Game Library</h1>
-  <div class="total-badge" id="totalBadge">0 Games</div>
+  <div class="total-badge" id="totalBadge">Loading...</div>
 </div>
 
-<!-- PLATFORM FILTERS (EXCLUSIVE) -->
 <div class="stats" id="statsContainer">
   <div class="stat" data-platform="steam">
     <div class="plat-name">STEAM</div>
@@ -208,12 +199,10 @@
   </div>
 </div>
 
-<!-- SEARCH -->
 <div class="filters">
   <input id="search" placeholder="Search games...">
 </div>
 
-<!-- VIEW + ACCOUNT BUTTONS -->
 <div class="view-row">
   <div class="view-left">
     <button id="gridBtn" class="active">Grid</button>
@@ -223,16 +212,14 @@
   <div class="view-right">
     <button id="pogarBtn">Pogarici</button>
     <button id="batmanBtn">Batman</button>
-    <button id="updateBtn" title="Fetch gamelist.json and embed into this page">Update Library</button>
+    <button id="updateBtn" title="Manually refresh gamelist.json">Update Library</button>
   </div>
 </div>
 
 <br>
 
-<!-- GRID -->
 <div class="grid" id="grid"></div>
 
-<!-- TABLE -->
 <table id="table">
 <thead>
 <tr>
@@ -246,38 +233,7 @@
 <tbody id="tbody"></tbody>
 </table>
 
-<!-- Hidden place to store embedded JSON (will be updated by Update Library) -->
-<script id="embeddedData" type="application/json" style="display:none">
-[
-{"Game":"112 Operator","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"09.08.2025"},
-{"Game":"20 Minutes Till Dawn","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"03.01.2024"},
-{"Game":"20XX","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"31.07.2020"},
-{"Game":"3 out of 10: Season One - 5 Ep.","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"28.09.2020"},
-{"Game":"3 out of 10: Season Two","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"13.04.2021"},
-{"Game":"3on3 Freestyle","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"TRUE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"2016-2023"},
-{"Game":"911 Operator","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"TRUE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"27.10.2025"},
-{"Game":"A Game Of Thrones: The Board Game Digital Edition","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"26.06.2022"},
-{"Game":"A Plague Tale: Innocence","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"05.08.2021"},
-{"Game":"A Story About My Uncle","Pogarici":"FALSE","Batman":"TRUE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"TRUE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"2016-2023"},
-{"Game":"A Total War Saga: TROY","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"13.08.2020"},
-{"Game":"Absolute Drift","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"18.02.2021"},
-{"Game":"ABZU","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"09.10.2020"},
-{"Game":"Adios","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"28.01.2023"},
-{"Game":"Aerial_Knight's Never Yield","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"01.03.2024"},
-{"Game":"Age of Empires II (2013)","Pogarici":"FALSE","Batman":"TRUE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"TRUE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"2016-2023"}
-]
-</script>
-
 <script>
-/*
-  Option A implementation:
-  - Update Library fetches gamelist.json and embeds it into the hidden <script id="embeddedData">.
-  - The page builds fast lookup indexes (platformIndex, accountIndex) for instant filtering.
-  - The embedded JSON is used until Update Library is pressed again.
-  - The full total (fullTotal) is fixed to the embedded dataset size and does not change when filtering.
-  - The embedded JSON is also saved to localStorage for faster reloads.
-*/
-
 /* Platform mapping */
 const PLATFORM_KEYS = [
   { key: "STEAM", slug: "steam", name: "Steam" },
@@ -297,22 +253,21 @@ const table = document.getElementById("table");
 const pogarBtn = document.getElementById("pogarBtn");
 const batmanBtn = document.getElementById("batmanBtn");
 const updateBtn = document.getElementById("updateBtn");
-const embeddedDataScript = document.getElementById("embeddedData");
 
 const gridBtn = document.getElementById("gridBtn");
 const tableBtn = document.getElementById("tableBtn");
 
 /* State */
-let games = []; // array of normalized game objects
-let fullTotal = 0; // fixed total of embedded dataset
+let games = [];
+let fullTotal = 0;
 let selectedPlatform = null;
-let accountFilter = null; // 'pogarici' | 'batman' | null
+let accountFilter = null;
 let lastHighlightedRowId = null;
 
 /* Indexes for fast filtering */
-let platformIndex = {}; // slug -> array of indices
-let accountIndex = { pogarici: [], batman: [] }; // account -> array of indices
-let nameIndex = []; // lowercase names for quick search by index
+let platformIndex = {};
+let accountIndex = { pogarici: [], batman: [] };
+let nameIndex = [];
 
 /* Utility: normalize boolean-like strings */
 function truthy(val){
@@ -382,7 +337,6 @@ function buildIndexes(){
 
   for(let i=0;i<games.length;i++){
     const g = games[i];
-    // platform index: if either account has platform, include index
     PLATFORM_KEYS.forEach(pk=>{
       if((g.pogariciPlatforms && g.pogariciPlatforms.includes(pk.slug)) ||
          (g.batmanPlatforms && g.batmanPlatforms.includes(pk.slug)) ||
@@ -391,70 +345,18 @@ function buildIndexes(){
       }
     });
 
-    // account index
     if(g.pogarici || (g.pogariciPlatforms && g.pogariciPlatforms.length>0)) accountIndex.pogarici.push(i);
     if(g.batman || (g.batmanPlatforms && g.batmanPlatforms.length>0)) accountIndex.batman.push(i);
 
-    // name index
     nameIndex.push(String(g.name || "").toLowerCase());
   }
 }
 
-/* Initialize data from embeddedData script tag or localStorage fallback */
-function initializeFromEmbedded(){
-  try{
-    const text = embeddedDataScript.textContent && embeddedDataScript.textContent.trim();
-    if(text){
-      const parsed = JSON.parse(text);
-      if(Array.isArray(parsed)){
-        games = parsed.map(convertRow);
-        fullTotal = parsed.length;
-        totalBadge.textContent = `${fullTotal} Games`;
-        buildIndexes();
-        updatePlatformCounts();
-        render();
-        return;
-      }
-    }
-  }catch(e){
-    console.warn("embeddedData parse failed", e);
-  }
-
-  // fallback: try localStorage
-  try{
-    const stored = localStorage.getItem("embeddedGames");
-    if(stored){
-      const parsed = JSON.parse(stored);
-      if(Array.isArray(parsed)){
-        games = parsed.map(convertRow);
-        fullTotal = parsed.length;
-        totalBadge.textContent = `${fullTotal} Games`;
-        buildIndexes();
-        updatePlatformCounts();
-        render();
-        return;
-      }
-    }
-  }catch(e){
-    console.warn("localStorage parse failed", e);
-  }
-
-  // if nothing found, use the embedded script content (it should exist)
-  // if still nothing, games remains empty
-  games = [];
-  fullTotal = 0;
-  totalBadge.textContent = `${fullTotal} Games`;
-  buildIndexes();
-  updatePlatformCounts();
-  render();
-}
-
-/* Update platform card counts (combined P+B per platform) */
+/* Update platform card counts */
 function updatePlatformCounts(){
   const counts = {};
   PLATFORM_KEYS.forEach(pk=> counts[pk.slug] = 0);
 
-  // Use platformIndex if available (fast)
   PLATFORM_KEYS.forEach(pk=>{
     const arr = platformIndex[pk.slug] || [];
     counts[pk.slug] = arr.length;
@@ -467,11 +369,10 @@ function updatePlatformCounts(){
   document.getElementById("ps4Counts").textContent   = `${counts.ps4}`;
 }
 
-/* Helper: intersection of two sorted-ish arrays (works with unsorted too but uses Set for speed) */
+/* Helper: intersection of two arrays */
 function intersectArrays(a, b){
   if(!a || !b) return [];
   if(a.length === 0 || b.length === 0) return [];
-  // iterate smaller array and check membership in Set of larger
   if(a.length > b.length) [a,b] = [b,a];
   const setB = new Set(b);
   const res = [];
@@ -479,24 +380,20 @@ function intersectArrays(a, b){
   return res;
 }
 
-/* FILTER LOGIC using indexes for speed */
+/* FILTER LOGIC */
 function filterGames(){
-  // Start with all indices
   let candidateIds = Array.from({length: games.length}, (_,i)=>i);
 
-  // Platform filter
   if(selectedPlatform){
     candidateIds = platformIndex[selectedPlatform] ? platformIndex[selectedPlatform].slice() : [];
   }
 
-  // Account filter
   if(accountFilter === "pogarici"){
     candidateIds = intersectArrays(candidateIds, accountIndex.pogarici);
   } else if(accountFilter === "batman"){
     candidateIds = intersectArrays(candidateIds, accountIndex.batman);
   }
 
-  // Search: filter by nameIndex (only on candidateIds)
   const q = (search.value || "").trim().toLowerCase();
   if(q){
     const filtered = [];
@@ -506,7 +403,6 @@ function filterGames(){
     candidateIds = filtered;
   }
 
-  // Map ids to game objects in the same order
   return candidateIds.map(id => games[id]);
 }
 
@@ -550,7 +446,6 @@ function renderGrid(list){
   }
   grid.appendChild(frag);
 
-  // attach handlers
   grid.querySelectorAll(".card").forEach(card=>{
     card.addEventListener("click", onCardClick);
     card.addEventListener("keydown", (e)=>{
@@ -576,11 +471,11 @@ function renderTable(list){
 
     const pogPlatforms = (g.pogariciPlatforms && g.pogariciPlatforms.length)
       ? g.pogariciPlatforms.map(p=>platformDisplayName(p)).join(" | ")
-      : (g.pogarici ? "-" : "-");
+      : "-";
 
     const batPlatforms = (g.batmanPlatforms && g.batmanPlatforms.length)
       ? g.batmanPlatforms.map(p=>platformDisplayName(p)).join(" | ")
-      : (g.batman ? "-" : "-");
+      : "-";
 
     const tdPog = document.createElement("td");
     tdPog.setAttribute("data-label","Pogarici");
@@ -615,10 +510,9 @@ function render(){
   const list = filterGames();
   renderGrid(list);
   renderTable(list);
-  // totalBadge remains fixed to fullTotal (embedded dataset)
 }
 
-/* Card click handler: switch to table and highlight */
+/* Card click handler */
 function onCardClick(e){
   const idx = Number(this.dataset.index);
   if(Number.isNaN(idx)) return;
@@ -645,17 +539,8 @@ function platformDisplayName(slug){
   const found = PLATFORM_KEYS.find(p=>p.slug === slug);
   return found ? found.name : slug;
 }
-function escapeHtml(str){
-  if(!str && str !== 0) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
-/* UI: platform card click (exclusive toggle) */
+/* UI: platform card click */
 document.querySelectorAll(".stat").forEach(el=>{
   el.onclick = ()=>{
     const p = el.dataset.platform;
@@ -718,64 +603,52 @@ search.addEventListener("input", ()=>{
   searchTimer = setTimeout(()=>{ render(); }, 160);
 });
 
-/* Perform update: fetch gamelist.json and embed into page */
-function performUpdate(){
-  return new Promise((resolve)=>{
-    fetch("gamelist.json", { cache: "no-store" })
-      .then(resp=>{
-        if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        return resp.json();
-      })
-      .then(data=>{
-        if(!Array.isArray(data)) throw new Error("Invalid JSON (expected array)");
+/* Load data from gamelist.json */
+async function loadGameList(){
+  try{
+    console.log("Fetching gamelist.json...");
+    const resp = await fetch("./gamelist.json?t=" + Date.now(), { cache: "no-store" });
+    if(!resp.ok){
+      throw new Error(`HTTP ${resp.status}`);
+    }
+    const data = await resp.json();
+    if(!Array.isArray(data)){
+      throw new Error("Invalid JSON (expected array)");
+    }
 
-        // embed into script tag
-        const raw = JSON.stringify(data, null, 0);
-        embeddedDataScript.textContent = raw;
+    games = data.map(convertRow);
+    fullTotal = games.length;
+    totalBadge.textContent = `${fullTotal} Games`;
+    buildIndexes();
+    updatePlatformCounts();
+    render();
 
-        // save to localStorage for faster reloads
-        try{ localStorage.setItem("embeddedGames", raw); }catch(e){ console.warn("localStorage set failed", e); }
-
-        // update in-memory games and indexes
-        games = data.map(convertRow);
-        fullTotal = data.length;
-        totalBadge.textContent = `${fullTotal} Games`;
-        buildIndexes();
-        updatePlatformCounts();
-        render();
-
-        resolve(true);
-      })
-      .catch(err=>{
-        console.error("Update failed", err);
-        resolve(false);
-      });
-  });
+    console.log(`Loaded ${fullTotal} games successfully`);
+    return true;
+  }catch(err){
+    console.error("Load failed", err);
+    totalBadge.textContent = "Load Error";
+    return false;
+  }
 }
 
-/* Update Library button: manual update trigger */
+/* Manual update button */
 updateBtn.addEventListener("click", async ()=>{
   updateBtn.disabled = true;
   updateBtn.textContent = "Updating...";
-  const success = await performUpdate();
+  const success = await loadGameList();
   if(success){
     updateBtn.textContent = "Updated ✓";
     setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
   } else {
     updateBtn.textContent = "Update Failed";
     setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
-    alert("Update failed. Make sure gamelist.json is reachable in the same folder and is valid JSON.");
   }
   updateBtn.disabled = false;
 });
 
-/* Initialize on load */
-initializeFromEmbedded();
-
-/* Auto-update from gamelist.json on page load */
-(async ()=>{
-  await performUpdate();
-})();
+/* Load on page load */
+window.addEventListener("DOMContentLoaded", loadGameList);
 
 </script>
 </body>
