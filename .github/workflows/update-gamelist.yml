@@ -1,4 +1,4 @@
-name: Update gamelist.json from Apps Script
+name: Debug Update gamelist.json from Apps Script
 
 on:
   workflow_dispatch: {}
@@ -12,49 +12,45 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Fetch gamelist from Apps Script (with diagnostics)
-        id: fetch
+      - name: Debug fetch (verbose)
+        id: debug_fetch
         run: |
           set -euo pipefail
           URL="https://script.google.com/macros/s/AKfycbx78biA9_LgLZy-PdpkEmiyBXd5q8fI9QJMCKc2yXqyb3wAL1KptkYpytig4q7uDzYFiw/exec"
-          echo "Fetching $URL"
-          # Fetch and capture HTTP status and body
-          HTTP_OUT=$(mktemp)
-          HTTP_STATUS=$(curl -sS -w "%{http_code}" -o "$HTTP_OUT" "$URL" || true)
-          echo "HTTP status: $HTTP_STATUS"
-          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
-            echo "Fetch failed. Response body:"
-            sed -n '1,200p' "$HTTP_OUT" || true
-            echo "---- end response ----"
-            rm -f "$HTTP_OUT"
-            exit 5
-          fi
-          mv "$HTTP_OUT" gamelist.json
-          echo "Fetched $(wc -c < gamelist.json) bytes."
+          echo "Fetching: $URL"
+          TMP=$(mktemp)
+          # verbose curl: prints request/response headers to stderr, body to file
+          curl -v -sS -D "$TMP.headers" -o "$TMP.body" "$URL" || true
+          echo "---- RESPONSE HEADERS ----"
+          sed -n '1,200p' "$TMP.headers" || true
+          echo "---- RESPONSE BODY PREVIEW (first 1000 bytes) ----"
+          head -c 1000 "$TMP.body" || true
+          echo
+          echo "---- BODY TYPE INFO ----"
+          file "$TMP.body" || true
+          echo "---- BODY SIZE ----"
+          wc -c "$TMP.body" || true
+          # Print HTTP status if present in headers
+          HTTP_STATUS=$(grep -i '^HTTP/' "$TMP.headers" | tail -n1 | awk '{print $2}' || true)
+          echo "HTTP status detected in headers: ${HTTP_STATUS:-<none>}"
+          # Save body to gamelist.json for later steps
+          mv "$TMP.body" gamelist.json
+          rm -f "$TMP.headers"
 
       - name: Validate JSON
         run: |
           set -euo pipefail
           if ! jq . gamelist.json > /dev/null 2>&1; then
-            echo "Invalid JSON in gamelist.json. Showing first 200 chars:"
-            head -c 200 gamelist.json || true
+            echo "Invalid JSON. Showing first 1000 chars:"
+            head -c 1000 gamelist.json || true
             exit 6
           fi
           echo "JSON validated."
 
-      - name: Show file size and preview
-        run: |
-          echo "Size: $(wc -c < gamelist.json) bytes"
-          echo "Preview (first 200 chars):"
-          head -c 200 gamelist.json || true
-          echo
-          echo "Preview (first 5 lines):"
-          head -n 5 gamelist.json || true
-
-      - name: Commit gamelist.json if changed
+      - name: Commit if changed
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
