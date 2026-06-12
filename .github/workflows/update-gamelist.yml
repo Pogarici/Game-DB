@@ -22,7 +22,6 @@ jobs:
           URL="https://script.google.com/macros/s/AKfycbx78biA9_LgLZy-PdpkEmiyBXd5q8fI9QJMCKc2yXqyb3wAL1KptkYpytig4q7uDzYFiw/exec"
           echo "Fetching: $URL"
           TMP=$(mktemp)
-          # verbose curl: prints request/response headers to stderr, body to file
           curl -L -v -sS -D "$TMP.headers" -o "$TMP.body" "$URL" || true
           echo "---- RESPONSE HEADERS ----"
           sed -n '1,200p' "$TMP.headers" || true
@@ -33,10 +32,8 @@ jobs:
           file "$TMP.body" || true
           echo "---- BODY SIZE ----"
           wc -c "$TMP.body" || true
-          # Print HTTP status if present in headers
           HTTP_STATUS=$(grep -i '^HTTP/' "$TMP.headers" | tail -n1 | awk '{print $2}' || true)
           echo "HTTP status detected in headers: ${HTTP_STATUS:-<none>}"
-          # Save body to gamelist.json for later steps
           mv "$TMP.body" gamelist.json
           rm -f "$TMP.headers"
 
@@ -50,15 +47,15 @@ jobs:
           fi
           echo "JSON validated."
 
-             - name: Commit if changed
-         run: |
-           set -euo pipefail
-           git config user.name "github-actions[bot]"
-           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-           git add gamelist.json
-           if git diff --cached --quiet; then
-             echo "No changes to commit"
-             exit 0
-           fi
-           git commit -m "Update gamelist.json from Apps Script: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-           git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gamelist.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update gamelist.json from Apps Script: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
