@@ -1,3 +1,4 @@
+index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,6 +112,8 @@ input, select{
 .cover{
     height:140px;
     background:#222;
+    background-size:cover;
+    background-position:center;
 }
 
 .title{ font-weight:bold; padding:10px; }
@@ -190,8 +193,8 @@ th,td{
 <thead>
 <tr>
 <th>Game</th>
-<th>Pogarici</th>
-<th>Batman</th>
+<th>Account</th>
+<th>Platform</th>
 <th>Status</th>
 <th>Date Added</th>
 </tr>
@@ -203,8 +206,9 @@ th,td{
 
 const API_URL = "./games.json";
 
+/* ✅ CACHE SETTINGS */
 const CACHE_KEY = "gameLibraryCache";
-const CACHE_TIME = 24 * 60 * 60 * 1000;
+const CACHE_TIME = 24 * 60 * 60 * 1000; // 24h
 
 let games = [];
 let selectedPlatform = null;
@@ -234,6 +238,19 @@ function formatDate(value){
     return `${day}.${month}.${year}`;
 }
 
+async function getCover(name){
+    try{
+        const res = await fetch(`https://api.rawg.io/api/games?search=${encodeURIComponent(name)}`);
+        const data = await res.json();
+
+        if(data.results && data.results.length > 0){
+            return data.results[0].background_image;
+        }
+    }catch{}
+    return "";
+}
+
+/* ✅ CACHED LOAD */
 async function loadData(){
 
     const cached = localStorage.getItem(CACHE_KEY);
@@ -245,90 +262,48 @@ async function loadData(){
             games = parsed.data;
             renderStats();
             render();
+            console.log("✅ Loaded from cache");
             return;
         }
     }
 
+    console.log("⏳ Fetching fresh data...");
+
     const res = await fetch(API_URL);
     const data = await res.json();
 
-  games = data.map(r => {
+    games = await Promise.all(data.map(async r=>{
 
-    let accounts = [];
-    if(isTrue(r["Pogarici"])) accounts.push("Pogarici");
-    if(isTrue(r["Batman"])) accounts.push("Batman");
+        let accounts = [];
+        if(isTrue(r["Pogarici"])) accounts.push("Pogarici");
+        if(isTrue(r["Batman"])) accounts.push("Batman");
 
-    let platforms = [];
+        let platforms = [];
 
-    let pogariciPlatforms = [];
-    let batmanPlatforms = [];
+        if(isTrue(r["EPIC (P)"]) || isTrue(r["EPIC (B)"])) platforms.push("EPIC");
+        if(isTrue(r["STEAM (P)"]) || isTrue(r["STEAM (B)"])) platforms.push("STEAM");
+        if(isTrue(r["GOG (P)"]) || isTrue(r["GOG (B)"])) platforms.push("GOG");
+        if(isTrue(r["UBISOFT (P)"]) || isTrue(r["UBISOFT (B)"])) platforms.push("UBISOFT");
+        if(isTrue(r["PS4 (P)"])) platforms.push("PS4");
 
-    // EPIC
-    if(isTrue(r["EPIC (P)"])) {
-        platforms.push("EPIC");
-        pogariciPlatforms.push("EPIC");
-    }
-    if(isTrue(r["EPIC (B)"])) {
-        platforms.push("EPIC");
-        batmanPlatforms.push("EPIC");
-    }
+        return {
+            game:r["Game"] || "-",
+            accounts,
+            platforms,
+            status:r["Status"] || "-",
+            date:formatDate(r["DATE OF ENTRY"]),
+            rawDate:new Date(r["DATE OF ENTRY"]),
+            cover: await getCover(r["Game"])
+        };
 
-    // STEAM
-    if(isTrue(r["STEAM (P)"])) {
-        platforms.push("STEAM");
-        pogariciPlatforms.push("STEAM");
-    }
-    if(isTrue(r["STEAM (B)"])) {
-        platforms.push("STEAM");
-        batmanPlatforms.push("STEAM");
-    }
-
-    // GOG
-    if(isTrue(r["GOG (P)"])) {
-        platforms.push("GOG");
-        pogariciPlatforms.push("GOG");
-    }
-    if(isTrue(r["GOG (B)"])) {
-        platforms.push("GOG");
-        batmanPlatforms.push("GOG");
-    }
-
-    // UBISOFT
-    if(isTrue(r["UBISOFT (P)"])) {
-        platforms.push("UBISOFT");
-        pogariciPlatforms.push("UBISOFT");
-    }
-    if(isTrue(r["UBISOFT (B)"])) {
-        platforms.push("UBISOFT");
-        batmanPlatforms.push("UBISOFT");
-    }
-
-    // PS4
-    if(isTrue(r["PS4 (P)"])) {
-        platforms.push("PS4");
-        pogariciPlatforms.push("PS4");
-    }
-
-    // remove duplicates (important!)
-    platforms = [...new Set(platforms)];
-
-    return {
-        game: r["Game"] || "-",
-        accounts,
-        platforms,
-        pogariciPlatforms,
-        batmanPlatforms,
-        status: r["Status"] || "-",
-        date: formatDate(r["DATE OF ENTRY"]),
-        rawDate: new Date(r["DATE OF ENTRY"])
-    };
-
-});
+    }));
 
     localStorage.setItem(CACHE_KEY, JSON.stringify({
         timestamp: Date.now(),
         data: games
     }));
+
+    console.log("✅ Cache saved");
 
     renderStats();
     render();
@@ -404,7 +379,7 @@ function renderGrid(list){
 
         grid.innerHTML += `
         <div class="card">
-            <div class="cover"></div>
+            <div class="cover" style="background-image:url('${g.cover || ""}')"></div>
             <div class="title">${g.game}</div>
             <div class="accounts">${g.accounts.join(" | ") || "-"}</div>
             <div class="platforms">${g.platforms.join(" | ") || "-"}</div>
@@ -415,13 +390,12 @@ function renderGrid(list){
 
 function renderTable(list){
     tbody.innerHTML = "";
-
     list.forEach(g=>{
         tbody.innerHTML += `
         <tr>
             <td>${g.game}</td>
-            <td>${g.pogariciPlatforms.join(" | ") || "-"}</td>
-            <td>${g.batmanPlatforms.join(" | ") || "-"}</td>
+            <td>${g.accounts.join(" | ") || "-"}</td>
+            <td>${g.platforms.join(" | ") || "-"}</td>
             <td>${g.status}</td>
             <td>${g.date}</td>
         </tr>`;
