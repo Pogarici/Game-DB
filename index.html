@@ -1,253 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Game Library</title>
-
 <style>
-
-body{
+  body{
     margin:0;
     font-family:Arial, sans-serif;
     background:#0f0f0f;
     color:white;
     padding:20px;
-}
+  }
 
-/* HEADER: title left, total count right on same line */
-.header-row{
+  /* HEADER: title left, total count right on same line */
+  .header-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+  }
+  h1{margin:0; font-size:22px; line-height:1;}
+  .total-badge{
+      color:#ddd;
+      background:transparent;
+      font-size:22px;
+      font-weight:700;
+  }
+
+  /* PLATFORM FILTER CARDS */
+  .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;
+      margin:14px 0 20px 0;
+  }
+
+  .stat{
+      background:#1c1c1c;
+      padding:12px;
+      border-radius:10px;
+      text-align:center;
+      cursor:pointer;
+      transition:0.2s;
+      user-select:none;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+  }
+
+  .stat:hover{ transform:scale(1.03); }
+  .stat.active{ background:#5865f2; }
+
+  .stat .plat-name{font-weight:700;}
+  .stat .plat-counts{font-size:18px;color:#ccc;font-weight:700;}
+
+  /* SEARCH */
+  .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+  }
+
+  input{
+      background:#1c1c1c;
+      border:none;
+      color:white;
+      padding:10px;
+      border-radius:8px;
+      flex:1;
+      min-width:200px;
+  }
+
+  /* VIEW + ACCOUNT BUTTON ROW */
+  .view-row{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:20px;
-}
-h1{margin:0; font-size:22px; line-height:1;}
-/* right-side total badge: larger font similar to title */
-.total-badge{
-    color:#ddd;
-    background:transparent;
-    font-size:22px;
-    font-weight:700;
-}
-
-/* PLATFORM FILTER CARDS */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-    gap:10px;
-    margin:14px 0 20px 0;
-}
-
-.stat{
-    background:#1c1c1c;
-    padding:12px;
-    border-radius:10px;
-    text-align:center;
-    cursor:pointer;
-    transition:0.2s;
-    user-select:none;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    align-items:center;
-    justify-content:center;
-}
-
-.stat:hover{
-    transform:scale(1.03);
-}
-
-.stat.active{
-    background:#5865f2;
-}
-
-/* platform name and counts */
-.stat .plat-name{font-weight:700;}
-.stat .plat-counts{font-size:18px;color:#ccc;font-weight:700;}
-
-/* SEARCH (kept identical to previous version) */
-.filters{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-bottom:12px;
-}
-
-input{
-    background:#1c1c1c;
-    border:none;
-    color:white;
-    padding:10px;
-    border-radius:8px;
-    flex:1;
-    min-width:200px;
-}
-
-/* VIEW + ACCOUNT BUTTON ROW */
-.view-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:12px;
-}
-
-/* left: view buttons */
-.view-left{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-/* right: account filter buttons + update */
-.view-right{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-/* VIEW & ACCOUNT BUTTONS */
-button{
-    background:#222;
-    border:none;
-    padding:10px 15px;
-    color:white;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-}
-button.active{background:#5865f2;}
-
-/* small "update" visual difference */
-button#updateBtn{ background:#2a2a2a; font-weight:700; }
-
-/* GRID 6 COLUMNS */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
     gap:12px;
-}
+    margin-bottom:12px;
+  }
 
-@media(max-width:1400px){
-    .grid{grid-template-columns:repeat(4,1fr);}
-}
+  .view-left{ display:flex; gap:8px; align-items:center; }
+  .view-right{ display:flex; gap:8px; align-items:center; }
 
-@media(max-width:900px){
-    .grid{grid-template-columns:repeat(2,1fr);}
-}
+  button{
+      background:#222;
+      border:none;
+      padding:10px 15px;
+      color:white;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+  }
+  button.active{background:#5865f2;}
+  button#updateBtn{ background:#2a2a2a; font-weight:700; }
 
-/* CARD */
-.card{
-    background:#1a1a1a;
-    border-radius:12px;
-    overflow:hidden;
-    transition:0.25s;
-    cursor:pointer;
-    display:flex;
-    flex-direction:column;
-}
-.card:hover{
-    transform:scale(1.04);
-    box-shadow:0 0 20px rgba(88,101,242,0.4);
-}
+  /* GRID */
+  .grid{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:12px;
+  }
+  @media(max-width:1400px){ .grid{grid-template-columns:repeat(4,1fr);} }
+  @media(max-width:900px){ .grid{grid-template-columns:repeat(2,1fr);} }
 
-/* COVER */
-.cover{
-    height:170px;
-    background-size:cover;
-    background-position:center;
-}
+  .card{
+      background:#1a1a1a;
+      border-radius:12px;
+      overflow:hidden;
+      transition:0.25s;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+  }
+  .card:hover{
+      transform:scale(1.04);
+      box-shadow:0 0 20px rgba(88,101,242,0.4);
+  }
 
-/* TITLE */
-.title{
-    font-size:13px;
-    font-weight:bold;
-    padding:8px;
-}
+  .cover{
+      height:170px;
+      background-size:cover;
+      background-position:center;
+  }
 
-/* PLATFORM TEXT */
-.platforms{
-    padding:0 8px 6px;
-    font-size:11px;
-    color:#bbb;
-}
+  .title{ font-size:13px; font-weight:bold; padding:8px; }
+  .platforms{ padding:0 8px 6px; font-size:11px; color:#bbb; }
+  .status{ font-size:11px; padding:0 8px 10px; }
+  .finished{color:#4ade80;}
+  .progress{color:#facc15;}
+  .none{color:#777;}
 
-/* STATUS */
-.status{
-    font-size:11px;
-    padding:0 8px 10px;
-}
+  /* TABLE */
+  table{
+      width:100%;
+      border-collapse:collapse;
+      display:none;
+      margin-top:10px;
+  }
+  th,td{
+      padding:10px;
+      border-bottom:1px solid #333;
+      text-align:left;
+      vertical-align:middle;
+  }
+  th{ background:#1c1c1c; font-weight:600; }
 
-.finished{color:#4ade80;}
-.progress{color:#facc15;}
-.none{color:#777;}
+  /* highlighted row */
+  .row-highlight{
+      animation: highlightFlash 2.5s ease-in-out;
+      box-shadow:0 0 18px rgba(88,101,242,0.25) inset;
+      background: linear-gradient(90deg, rgba(88,101,242,0.06), rgba(88,101,242,0.02));
+  }
+  @keyframes highlightFlash{
+      0%{ background: rgba(88,101,242,0.12); }
+      50%{ background: rgba(88,101,242,0.04); }
+      100%{ background: rgba(88,101,242,0.00); }
+  }
 
-/* TABLE */
-table{
-    width:100%;
-    border-collapse:collapse;
-    display:none;
-    margin-top:10px;
-}
-
-th,td{
-    padding:10px;
-    border-bottom:1px solid #333;
-    text-align:left;
-    vertical-align:middle;
-}
-
-th{
-    background:#1c1c1c;
-    font-weight:600;
-}
-
-/* highlighted row */
-.row-highlight{
-    animation: highlightFlash 2.5s ease-in-out;
-    box-shadow:0 0 18px rgba(88,101,242,0.25) inset;
-    background: linear-gradient(90deg, rgba(88,101,242,0.06), rgba(88,101,242,0.02));
-}
-
-@keyframes highlightFlash{
-    0%{ background: rgba(88,101,242,0.12); }
-    50%{ background: rgba(88,101,242,0.04); }
-    100%{ background: rgba(88,101,242,0.00); }
-}
-
-/* small platform badges inside table cells */
-.platform-badges{
-    font-size:12px;
-    color:#ddd;
-}
-
-.platform-badges span{
-    display:inline-block;
-    margin-right:6px;
-    padding:4px 8px;
-    background:#111;
-    border-radius:6px;
-    border:1px solid #222;
-}
-
-/* responsive table on small screens */
-@media(max-width:700px){
-    table, thead, tbody, th, td, tr { display:block; }
-    thead { display:none; }
-    tr { margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:8px; }
-    td { padding:6px 0; }
-    td::before { font-weight:600; display:block; color:#888; margin-bottom:4px; }
-    td[data-label="Game"]::before{ content: "Game"; }
-    td[data-label="Pogarici"]::before{ content: "Pogarici"; }
-    td[data-label="Batman"]::before{ content: "Batman"; }
-    td[data-label="Status"]::before{ content: "Status"; }
-    td[data-label="Date Added"]::before{ content: "Date Added"; }
-}
-
+  /* responsive table on small screens */
+  @media(max-width:700px){
+      table, thead, tbody, th, td, tr { display:block; }
+      thead { display:none; }
+      tr { margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:8px; }
+      td { padding:6px 0; }
+      td::before { font-weight:600; display:block; color:#888; margin-bottom:4px; }
+      td[data-label="Game"]::before{ content: "Game"; }
+      td[data-label="Pogarici"]::before{ content: "Pogarici"; }
+      td[data-label="Batman"]::before{ content: "Batman"; }
+      td[data-label="Status"]::before{ content: "Status"; }
+      td[data-label="Date Added"]::before{ content: "Date Added"; }
+  }
 </style>
 </head>
-
 <body>
 
 <div class="header-row">
@@ -279,12 +208,12 @@ th{
   </div>
 </div>
 
-<!-- SEARCH (identical placement and style to previous requested version) -->
+<!-- SEARCH -->
 <div class="filters">
   <input id="search" placeholder="Search games...">
 </div>
 
-<!-- VIEW + ACCOUNT BUTTONS (search is above these buttons) -->
+<!-- VIEW + ACCOUNT BUTTONS -->
 <div class="view-row">
   <div class="view-left">
     <button id="gridBtn" class="active">Grid</button>
@@ -317,33 +246,9 @@ th{
 <tbody id="tbody"></tbody>
 </table>
 
-<!-- Embedded data holder (optional) -->
-<script id="embeddedData" type="application/json" style="display:none"></script>
-
-<script>
-/*
-  New features in this version:
-  - "Update Library" button (right side) that fetches gamelist.json and embeds it into the page for instant access.
-  - When Update Library runs successfully it:
-      * replaces the in-memory games list with the fetched data (converted),
-      * stores the raw JSON into a hidden <script id="embeddedData"> so the page contains the full dataset,
-      * saves the raw JSON into localStorage for faster reloads (optional),
-      * updates the fixed total count (totalBadge) to the full database size.
-  - On page load the script checks localStorage and the embeddedData script tag first, so if you previously updated the library it will use the embedded copy (no network wait).
-  - The total number shown on the right is always the full database count (not the filtered subtotal).
-*/
-
-/* Platform mapping: key fragments in JSON -> slug and display name */
-const PLATFORM_KEYS = [
-  { key: "STEAM", slug: "steam", name: "Steam" },
-  { key: "EPIC", slug: "epic", name: "Epic" },
-  { key: "GOG", slug: "gog", name: "GOG" },
-  { key: "UBISOFT", slug: "ubisoft", name: "UBISOFT" },
-  { key: "PS4", slug: "ps4", name: "PS4" }
-];
-
-/* --- Embedded gamelist.json sample provided by user (initial dataset) --- */
-const initialExternalData = [
+<!-- Hidden place to store embedded JSON (will be updated by Update Library) -->
+<script id="embeddedData" type="application/json" style="display:none">
+[
 {"Game":"112 Operator","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"09.08.2025"},
 {"Game":"20 Minutes Till Dawn","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"03.01.2024"},
 {"Game":"20XX","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"31.07.2020"},
@@ -360,14 +265,27 @@ const initialExternalData = [
 {"Game":"Adios","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"28.01.2023"},
 {"Game":"Aerial_Knight's Never Yield","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"01.03.2024"},
 {"Game":"Age of Empires II (2013)","Pogarici":"FALSE","Batman":"TRUE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"TRUE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"2016-2023"}
-];
-/* --- end initial data --- */
+]
+</script>
 
-let games = []; // internal normalized list
-let selectedPlatform = null;
-let accountFilter = null; // 'pogarici' | 'batman' | null
-let lastHighlightedRowId = null;
-let fullTotal = 0; // fixed total of the database (used for totalBadge)
+<script>
+/*
+  Option A implementation:
+  - Update Library fetches gamelist.json and embeds it into the hidden <script id="embeddedData">.
+  - The page builds fast lookup indexes (platformIndex, accountIndex) for instant filtering.
+  - The embedded JSON is used until Update Library is pressed again.
+  - The full total (fullTotal) is fixed to the embedded dataset size and does not change when filtering.
+  - The embedded JSON is also saved to localStorage for faster reloads.
+*/
+
+/* Platform mapping */
+const PLATFORM_KEYS = [
+  { key: "STEAM", slug: "steam", name: "Steam" },
+  { key: "EPIC", slug: "epic", name: "Epic" },
+  { key: "GOG", slug: "gog", name: "GOG" },
+  { key: "UBISOFT", slug: "ubisoft", name: "UBISOFT" },
+  { key: "PS4", slug: "ps4", name: "PS4" }
+];
 
 /* DOM refs */
 const grid = document.getElementById("grid");
@@ -381,6 +299,21 @@ const batmanBtn = document.getElementById("batmanBtn");
 const updateBtn = document.getElementById("updateBtn");
 const embeddedDataScript = document.getElementById("embeddedData");
 
+const gridBtn = document.getElementById("gridBtn");
+const tableBtn = document.getElementById("tableBtn");
+
+/* State */
+let games = []; // array of normalized game objects
+let fullTotal = 0; // fixed total of embedded dataset
+let selectedPlatform = null;
+let accountFilter = null; // 'pogarici' | 'batman' | null
+let lastHighlightedRowId = null;
+
+/* Indexes for fast filtering */
+let platformIndex = {}; // slug -> array of indices
+let accountIndex = { pogarici: [], batman: [] }; // account -> array of indices
+let nameIndex = []; // lowercase names for quick search by index
+
 /* Utility: normalize boolean-like strings */
 function truthy(val){
   if(val === true || val === false) return val;
@@ -389,7 +322,7 @@ function truthy(val){
   return s === "true" || s === "yes" || s === "1";
 }
 
-/* Convert a single JSON row (user-provided format) into internal game object */
+/* Convert a single JSON row into internal game object */
 function convertRow(row){
   const name = row["Game"] || row["game"] || row["Name"] || row["name"] || "Unknown";
   const pog = truthy(row["Pogarici"]);
@@ -425,9 +358,7 @@ function convertRow(row){
   });
 
   const platforms = Array.from(platformsSet);
-
-  // cover: not provided in sample; leave empty
-  const cover = "";
+  const cover = row["cover"] || row["Cover"] || "";
 
   return {
     name,
@@ -442,16 +373,45 @@ function convertRow(row){
   };
 }
 
-/* Initialize games from embeddedData (localStorage or initial sample) */
-function initializeData(){
-  // Priority: embeddedData script tag -> localStorage -> initialExternalData
+/* Build indexes for fast filtering */
+function buildIndexes(){
+  platformIndex = {};
+  PLATFORM_KEYS.forEach(pk => platformIndex[pk.slug] = []);
+  accountIndex = { pogarici: [], batman: [] };
+  nameIndex = [];
+
+  for(let i=0;i<games.length;i++){
+    const g = games[i];
+    // platform index: if either account has platform, include index
+    PLATFORM_KEYS.forEach(pk=>{
+      if((g.pogariciPlatforms && g.pogariciPlatforms.includes(pk.slug)) ||
+         (g.batmanPlatforms && g.batmanPlatforms.includes(pk.slug)) ||
+         (g.platforms && g.platforms.includes(pk.slug))){
+        platformIndex[pk.slug].push(i);
+      }
+    });
+
+    // account index
+    if(g.pogarici || (g.pogariciPlatforms && g.pogariciPlatforms.length>0)) accountIndex.pogarici.push(i);
+    if(g.batman || (g.batmanPlatforms && g.batmanPlatforms.length>0)) accountIndex.batman.push(i);
+
+    // name index
+    nameIndex.push(String(g.name || "").toLowerCase());
+  }
+}
+
+/* Initialize data from embeddedData script tag or localStorage fallback */
+function initializeFromEmbedded(){
   try{
-    const embeddedText = embeddedDataScript.textContent && embeddedDataScript.textContent.trim();
-    if(embeddedText){
-      const parsed = JSON.parse(embeddedText);
-      if(Array.isArray(parsed) && parsed.length>0){
+    const text = embeddedDataScript.textContent && embeddedDataScript.textContent.trim();
+    if(text){
+      const parsed = JSON.parse(text);
+      if(Array.isArray(parsed)){
         games = parsed.map(convertRow);
-        setFullTotalAndCounts(parsed.length);
+        fullTotal = parsed.length;
+        totalBadge.textContent = `${fullTotal} Games`;
+        buildIndexes();
+        updatePlatformCounts();
         render();
         return;
       }
@@ -460,13 +420,17 @@ function initializeData(){
     console.warn("embeddedData parse failed", e);
   }
 
+  // fallback: try localStorage
   try{
     const stored = localStorage.getItem("embeddedGames");
     if(stored){
       const parsed = JSON.parse(stored);
-      if(Array.isArray(parsed) && parsed.length>0){
+      if(Array.isArray(parsed)){
         games = parsed.map(convertRow);
-        setFullTotalAndCounts(parsed.length);
+        fullTotal = parsed.length;
+        totalBadge.textContent = `${fullTotal} Games`;
+        buildIndexes();
+        updatePlatformCounts();
         render();
         return;
       }
@@ -475,32 +439,25 @@ function initializeData(){
     console.warn("localStorage parse failed", e);
   }
 
-  // fallback to initial sample
-  games = initialExternalData.map(convertRow);
-  setFullTotalAndCounts(initialExternalData.length);
-  render();
-}
-
-/* Set fullTotal and update platform counts and totalBadge */
-function setFullTotalAndCounts(totalCount){
-  fullTotal = totalCount;
+  // if nothing found, use the embedded script content (it should exist)
+  // if still nothing, games remains empty
+  games = [];
+  fullTotal = 0;
   totalBadge.textContent = `${fullTotal} Games`;
-  updatePlatformCounts(); // compute combined counts per platform from current games array
+  buildIndexes();
+  updatePlatformCounts();
+  render();
 }
 
 /* Update platform card counts (combined P+B per platform) */
 function updatePlatformCounts(){
   const counts = {};
-  PLATFORM_KEYS.forEach(pk=>{
-    counts[pk.slug] = 0;
-  });
+  PLATFORM_KEYS.forEach(pk=> counts[pk.slug] = 0);
 
-  games.forEach(g=>{
-    PLATFORM_KEYS.forEach(pk=>{
-      const hasP = g.pogariciPlatforms && g.pogariciPlatforms.includes(pk.slug);
-      const hasB = g.batmanPlatforms && g.batmanPlatforms.includes(pk.slug);
-      if(hasP || hasB) counts[pk.slug]++;
-    });
+  // Use platformIndex if available (fast)
+  PLATFORM_KEYS.forEach(pk=>{
+    const arr = platformIndex[pk.slug] || [];
+    counts[pk.slug] = arr.length;
   });
 
   document.getElementById("steamCounts").textContent = `${counts.steam}`;
@@ -510,28 +467,211 @@ function updatePlatformCounts(){
   document.getElementById("ps4Counts").textContent   = `${counts.ps4}`;
 }
 
-/* PLATFORM FILTER (EXCLUSIVE TOGGLE) */
-document.querySelectorAll(".stat").forEach(el=>{
-  el.onclick=()=>{
-    const p = el.dataset.platform;
+/* Helper: intersection of two sorted-ish arrays (works with unsorted too but uses Set for speed) */
+function intersectArrays(a, b){
+  if(!a || !b) return [];
+  if(a.length === 0 || b.length === 0) return [];
+  // iterate smaller array and check membership in Set of larger
+  if(a.length > b.length) [a,b] = [b,a];
+  const setB = new Set(b);
+  const res = [];
+  for(const v of a) if(setB.has(v)) res.push(v);
+  return res;
+}
 
-    /* TOGGLE OFF IF SAME */
+/* FILTER LOGIC using indexes for speed */
+function filterGames(){
+  // Start with all indices
+  let candidateIds = Array.from({length: games.length}, (_,i)=>i);
+
+  // Platform filter
+  if(selectedPlatform){
+    candidateIds = platformIndex[selectedPlatform] ? platformIndex[selectedPlatform].slice() : [];
+  }
+
+  // Account filter
+  if(accountFilter === "pogarici"){
+    candidateIds = intersectArrays(candidateIds, accountIndex.pogarici);
+  } else if(accountFilter === "batman"){
+    candidateIds = intersectArrays(candidateIds, accountIndex.batman);
+  }
+
+  // Search: filter by nameIndex (only on candidateIds)
+  const q = (search.value || "").trim().toLowerCase();
+  if(q){
+    const filtered = [];
+    for(const id of candidateIds){
+      if(nameIndex[id].includes(q)) filtered.push(id);
+    }
+    candidateIds = filtered;
+  }
+
+  // Map ids to game objects in the same order
+  return candidateIds.map(id => games[id]);
+}
+
+/* GRID RENDER */
+function renderGrid(list){
+  grid.innerHTML = "";
+  if(!list || list.length === 0) return;
+
+  const frag = document.createDocumentFragment();
+  for(const g of list){
+    const originalIndex = games.indexOf(g);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.setAttribute("data-index", originalIndex);
+    card.setAttribute("role","button");
+    card.setAttribute("tabindex","0");
+    card.setAttribute("aria-label", `Open ${g.name} in table`);
+
+    const cover = document.createElement("div");
+    cover.className = "cover";
+    cover.style.backgroundImage = `url('${g.cover || "https://via.placeholder.com/300x170?text=No+Cover"}')`;
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = g.name;
+
+    const plats = document.createElement("div");
+    plats.className = "platforms";
+    plats.textContent = (g.platforms || []).map(p=>platformDisplayName(p)).join(" | ").toUpperCase();
+
+    const status = document.createElement("div");
+    status.className = "status " + (g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none");
+    status.textContent = g.status || "";
+
+    card.appendChild(cover);
+    card.appendChild(title);
+    card.appendChild(plats);
+    card.appendChild(status);
+
+    frag.appendChild(card);
+  }
+  grid.appendChild(frag);
+
+  // attach handlers
+  grid.querySelectorAll(".card").forEach(card=>{
+    card.addEventListener("click", onCardClick);
+    card.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " ") onCardClick.call(card, e);
+    });
+  });
+}
+
+/* TABLE RENDER */
+function renderTable(list){
+  tbody.innerHTML = "";
+  if(!list || list.length === 0) return;
+
+  const frag = document.createDocumentFragment();
+  for(const g of list){
+    const originalIndex = games.indexOf(g);
+    const row = document.createElement("tr");
+    row.id = `row-${originalIndex}`;
+
+    const tdGame = document.createElement("td");
+    tdGame.setAttribute("data-label","Game");
+    tdGame.textContent = g.name;
+
+    const pogPlatforms = (g.pogariciPlatforms && g.pogariciPlatforms.length)
+      ? g.pogariciPlatforms.map(p=>platformDisplayName(p)).join(" | ")
+      : (g.pogarici ? "-" : "-");
+
+    const batPlatforms = (g.batmanPlatforms && g.batmanPlatforms.length)
+      ? g.batmanPlatforms.map(p=>platformDisplayName(p)).join(" | ")
+      : (g.batman ? "-" : "-");
+
+    const tdPog = document.createElement("td");
+    tdPog.setAttribute("data-label","Pogarici");
+    tdPog.textContent = pogPlatforms;
+
+    const tdBat = document.createElement("td");
+    tdBat.setAttribute("data-label","Batman");
+    tdBat.textContent = batPlatforms;
+
+    const tdStatus = document.createElement("td");
+    tdStatus.setAttribute("data-label","Status");
+    tdStatus.className = g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none";
+    tdStatus.textContent = g.status || "";
+
+    const tdDate = document.createElement("td");
+    tdDate.setAttribute("data-label","Date Added");
+    tdDate.textContent = g.date || "";
+
+    row.appendChild(tdGame);
+    row.appendChild(tdPog);
+    row.appendChild(tdBat);
+    row.appendChild(tdStatus);
+    row.appendChild(tdDate);
+
+    frag.appendChild(row);
+  }
+  tbody.appendChild(frag);
+}
+
+/* MASTER RENDER */
+function render(){
+  const list = filterGames();
+  renderGrid(list);
+  renderTable(list);
+  // totalBadge remains fixed to fullTotal (embedded dataset)
+}
+
+/* Card click handler: switch to table and highlight */
+function onCardClick(e){
+  const idx = Number(this.dataset.index);
+  if(Number.isNaN(idx)) return;
+  showTableView();
+
+  setTimeout(()=>{
+    const rowId = `row-${idx}`;
+    const row = document.getElementById(rowId);
+    if(row){
+      if(lastHighlightedRowId){
+        const prev = document.getElementById(lastHighlightedRowId);
+        if(prev) prev.classList.remove("row-highlight");
+      }
+      row.classList.add("row-highlight");
+      lastHighlightedRowId = rowId;
+      row.scrollIntoView({behavior:"smooth", block:"center"});
+      setTimeout(()=>{ row.classList.remove("row-highlight"); lastHighlightedRowId = null; }, 3000);
+    }
+  }, 120);
+}
+
+/* Helpers */
+function platformDisplayName(slug){
+  const found = PLATFORM_KEYS.find(p=>p.slug === slug);
+  return found ? found.name : slug;
+}
+function escapeHtml(str){
+  if(!str && str !== 0) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* UI: platform card click (exclusive toggle) */
+document.querySelectorAll(".stat").forEach(el=>{
+  el.onclick = ()=>{
+    const p = el.dataset.platform;
     if(selectedPlatform === p){
       selectedPlatform = null;
       document.querySelectorAll(".stat").forEach(x=>x.classList.remove("active"));
-    }else{
+    } else {
       selectedPlatform = p;
-      document.querySelectorAll(".stat").forEach(x=>{
-        x.classList.remove("active");
-      });
+      document.querySelectorAll(".stat").forEach(x=>x.classList.remove("active"));
       el.classList.add("active");
     }
-
     render();
   };
 });
 
-/* ACCOUNT FILTER BUTTONS (Pogarici / Batman) */
+/* Account filter buttons */
 pogarBtn.addEventListener("click", ()=>{
   if(accountFilter === "pogarici"){
     accountFilter = null;
@@ -543,7 +683,6 @@ pogarBtn.addEventListener("click", ()=>{
   }
   render();
 });
-
 batmanBtn.addEventListener("click", ()=>{
   if(accountFilter === "batman"){
     accountFilter = null;
@@ -556,224 +695,69 @@ batmanBtn.addEventListener("click", ()=>{
   render();
 });
 
-/* UPDATE LIBRARY BUTTON
-   - Fetches gamelist.json from same folder
-   - On success: embeds JSON into <script id="embeddedData">, saves to localStorage, updates in-memory games and fullTotal
-*/
+/* View toggle */
+gridBtn.onclick = showGridView;
+tableBtn.onclick = showTableView;
+function showGridView(){
+  grid.style.display = "grid";
+  table.style.display = "none";
+  gridBtn.classList.add("active");
+  tableBtn.classList.remove("active");
+}
+function showTableView(){
+  grid.style.display = "none";
+  table.style.display = "table";
+  tableBtn.classList.add("active");
+  gridBtn.classList.remove("active");
+}
+
+/* Search input (debounced) */
+let searchTimer = null;
+search.addEventListener("input", ()=>{
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{ render(); }, 160);
+});
+
+/* Update Library button: fetch gamelist.json and embed into page */
 updateBtn.addEventListener("click", async ()=>{
   updateBtn.disabled = true;
   updateBtn.textContent = "Updating...";
   try{
-    const resp = await fetch("gamelist.json", {cache: "no-store"});
+    const resp = await fetch("gamelist.json", { cache: "no-store" });
     if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
-    if(!Array.isArray(data)) throw new Error("Invalid JSON format (expected array)");
+    if(!Array.isArray(data)) throw new Error("Invalid JSON (expected array)");
 
-    // embed into script tag and localStorage
-    const raw = JSON.stringify(data);
+    // embed into script tag
+    const raw = JSON.stringify(data, null, 0);
     embeddedDataScript.textContent = raw;
+
+    // save to localStorage for faster reloads
     try{ localStorage.setItem("embeddedGames", raw); }catch(e){ console.warn("localStorage set failed", e); }
 
-    // update in-memory games
+    // update in-memory games and indexes
     games = data.map(convertRow);
-    setFullTotalAndCounts(data.length);
+    fullTotal = data.length;
+    totalBadge.textContent = `${fullTotal} Games`;
+    buildIndexes();
     updatePlatformCounts();
     render();
 
-    // visual feedback
     updateBtn.textContent = "Updated ✓";
-    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1400);
+    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
   }catch(err){
     console.error("Update failed", err);
     updateBtn.textContent = "Update Failed";
-    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1400);
+    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
     alert("Update failed. Make sure gamelist.json is reachable in the same folder and is valid JSON.");
   }finally{
     updateBtn.disabled = false;
   }
 });
 
-/* FILTER LOGIC */
-function filterGames(){
-  let list = games.slice();
-
-  /* PLATFORM FILTER (SINGLE SELECT) */
-  if(selectedPlatform){
-    list = list.filter(g => g.platforms.includes(selectedPlatform));
-  }
-
-  /* ACCOUNT FILTER (Pogarici or Batman) */
-  if(accountFilter === "pogarici"){
-    list = list.filter(g => g.pogarici === true || (g.pogariciPlatforms && g.pogariciPlatforms.length>0));
-  } else if(accountFilter === "batman"){
-    list = list.filter(g => g.batman === true || (g.batmanPlatforms && g.batmanPlatforms.length>0));
-  }
-
-  /* SEARCH */
-  if(search.value){
-    list = list.filter(g =>
-      g.name.toLowerCase().includes(search.value.toLowerCase())
-    );
-  }
-
-  return list;
-}
-
-/* GRID RENDER */
-function renderGrid(list){
-  grid.innerHTML="";
-
-  list.forEach((g)=>{
-    // use a stable index based on original games array to map to table row id
-    const originalIndex = games.indexOf(g);
-    grid.innerHTML+=`
-    <div class="card" data-index="${originalIndex}" role="button" tabindex="0" aria-label="Open ${escapeHtml(g.name)} in table">
-      <div class="cover" style="background-image:url('${g.cover || "https://via.placeholder.com/300x170?text=No+Cover"}')"></div>
-
-      <div class="title">${escapeHtml(g.name)}</div>
-
-      <div class="platforms">
-        ${g.platforms.map(p=>platformDisplayName(p)).join(" | ").toUpperCase()}
-      </div>
-
-      <div class="status ${g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none"}">
-        ${escapeHtml(g.status || "")}
-      </div>
-    </div>
-    `;
-  });
-
-  // attach click handlers to cards (after insertion)
-  grid.querySelectorAll(".card").forEach(card=>{
-    card.addEventListener("click", onCardClick);
-    card.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter" || e.key === " ") onCardClick.call(card, e);
-    });
-  });
-}
-
-/* handler when clicking a grid card */
-function onCardClick(e){
-  const idx = Number(this.dataset.index);
-  if(Number.isNaN(idx)) return;
-
-  // switch to table view and highlight the row for this game
-  showTableView();
-
-  // render ensures rows exist; then highlight and scroll
-  // use a small timeout to allow table to render and layout
-  setTimeout(()=>{
-    const rowId = `row-${idx}`;
-    const row = document.getElementById(rowId);
-    if(row){
-      // remove previous highlight if any
-      if(lastHighlightedRowId){
-        const prev = document.getElementById(lastHighlightedRowId);
-        if(prev) prev.classList.remove("row-highlight");
-      }
-
-      row.classList.add("row-highlight");
-      lastHighlightedRowId = rowId;
-
-      // scroll into view smoothly and center if possible
-      row.scrollIntoView({behavior:"smooth", block:"center"});
-
-      // remove highlight after 3 seconds
-      setTimeout(()=>{
-        row.classList.remove("row-highlight");
-        lastHighlightedRowId = null;
-      }, 3000);
-    }
-  }, 120);
-}
-
-/* TABLE RENDER */
-function renderTable(list){
-  tbody.innerHTML="";
-
-  list.forEach(g=>{
-    const originalIndex = games.indexOf(g);
-    const rowId = `row-${originalIndex}`;
-
-    const pogPlatforms = g.pogariciPlatforms && g.pogariciPlatforms.length
-      ? g.pogariciPlatforms.map(p=>platformDisplayName(p)).join(" | ")
-      : (g.pogarici ? "-" : "-");
-
-    const batPlatforms = g.batmanPlatforms && g.batmanPlatforms.length
-      ? g.batmanPlatforms.map(p=>platformDisplayName(p)).join(" | ")
-      : (g.batman ? "-" : "-");
-
-    tbody.innerHTML+=`
-    <tr id="${rowId}">
-      <td data-label="Game">${escapeHtml(g.name)}</td>
-      <td data-label="Pogarici">${escapeHtml(pogPlatforms)}</td>
-      <td data-label="Batman">${escapeHtml(batPlatforms)}</td>
-      <td data-label="Status" class="${g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none"}">${escapeHtml(g.status || "")}</td>
-      <td data-label="Date Added">${escapeHtml(g.date || "")}</td>
-    </tr>
-    `;
-  });
-}
-
-/* MASTER RENDER */
-function render(){
-  const list = filterGames();
-  renderGrid(list);
-  renderTable(list);
-
-  // NOTE: totalBadge intentionally NOT updated here so it remains the fixed total of the database
-}
-
-/* SEARCH */
-search.addEventListener("input", render);
-
-/* VIEW TOGGLE */
-const gridBtn=document.getElementById("gridBtn");
-const tableBtn=document.getElementById("tableBtn");
-
-gridBtn.onclick=()=>{
-  showGridView();
-};
-
-tableBtn.onclick=()=>{
-  showTableView();
-};
-
-function showGridView(){
-  grid.style.display="grid";
-  table.style.display="none";
-  gridBtn.classList.add("active");
-  tableBtn.classList.remove("active");
-}
-
-function showTableView(){
-  grid.style.display="none";
-  table.style.display="table";
-  tableBtn.classList.add("active");
-  gridBtn.classList.remove("active");
-}
-
-/* Helpers */
-function platformDisplayName(slug){
-  const found = PLATFORM_KEYS.find(p=>p.slug === slug);
-  return found ? found.name : slug;
-}
-
-/* simple HTML escape to avoid injection when inserting names */
-function escapeHtml(str){
-  if(!str && str !== 0) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-/* initialize from embedded data / localStorage / fallback */
-initializeData();
+/* Initialize on load */
+initializeFromEmbedded();
 
 </script>
-
 </body>
 </html>
