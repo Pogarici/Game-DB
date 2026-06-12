@@ -1,153 +1,248 @@
-index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Game Library</title>
 
 <style>
 
 body{
     margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f0f0f;
+    color:white;
     padding:20px;
-    background:#0f0f0f;
-    color:white;
-    font-family:Segoe UI,Arial,sans-serif;
 }
 
-h1{ margin:0 0 10px 0; }
-
-.sticky-bar{
-    position:sticky;
-    top:0;
-    z-index:1000;
-    background:#0f0f0f;
-    padding-bottom:10px;
-}
-
-.tools{
+/* HEADER: title left, total count right on same line */
+.header-row{
     display:flex;
-    gap:10px;
-    margin:10px 0;
-}
-
-input, select{
-    padding:10px;
-    border-radius:8px;
-    border:none;
-    background:#1e1e1e;
-    color:white;
-}
-
-.controls{
-    display:flex;
-    justify-content:space-between;
     align-items:center;
-    gap:10px;
-    margin-top:10px;
+    justify-content:space-between;
+    gap:20px;
+}
+h1{margin:0; font-size:22px; line-height:1;}
+/* right-side total badge: larger font similar to title */
+.total-badge{
+    color:#ddd;
+    background:transparent;
+    font-size:22px;
+    font-weight:700;
 }
 
-.left-controls,
-.right-controls{
-    display:flex;
-    gap:10px;
-}
-
-.btn{
-    background:#1e1e1e;
-    border:none;
-    color:white;
-    padding:10px 16px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.btn.active{
-    background:#5865f2;
-}
-
+/* PLATFORM FILTER CARDS */
 .stats{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
     gap:10px;
+    margin:14px 0 20px 0;
 }
 
 .stat{
     background:#1c1c1c;
+    padding:12px;
     border-radius:10px;
-    padding:15px;
     text-align:center;
     cursor:pointer;
+    transition:0.2s;
+    user-select:none;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    align-items:center;
+    justify-content:center;
 }
 
-.stat.active{ background:#5865f2; }
+.stat:hover{
+    transform:scale(1.03);
+}
 
+.stat.active{
+    background:#5865f2;
+}
+
+/* platform name and counts */
+.stat .plat-name{font-weight:700;}
+.stat .plat-counts{font-size:18px;color:#ccc;font-weight:700;}
+
+/* SEARCH (kept identical to previous version) */
+.filters{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+}
+
+input{
+    background:#1c1c1c;
+    border:none;
+    color:white;
+    padding:10px;
+    border-radius:8px;
+    flex:1;
+    min-width:200px;
+}
+
+/* VIEW + ACCOUNT BUTTON ROW */
+.view-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+/* left: view buttons */
+.view-left{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+/* right: account filter buttons + update */
+.view-right{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+/* VIEW & ACCOUNT BUTTONS */
+button{
+    background:#222;
+    border:none;
+    padding:10px 15px;
+    color:white;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+button.active{background:#5865f2;}
+
+/* small "update" visual difference */
+button#updateBtn{ background:#2a2a2a; font-weight:700; }
+
+/* GRID 6 COLUMNS */
 .grid{
     display:grid;
-    grid-template-columns:repeat(8,1fr);
+    grid-template-columns:repeat(6,1fr);
     gap:12px;
-    margin-top:20px;
 }
 
-@media(max-width:1600px){
-    .grid{grid-template-columns:repeat(6,1fr);}
-}
-@media(max-width:1200px){
+@media(max-width:1400px){
     .grid{grid-template-columns:repeat(4,1fr);}
 }
-@media(max-width:800px){
+
+@media(max-width:900px){
     .grid{grid-template-columns:repeat(2,1fr);}
 }
 
+/* CARD */
 .card{
     background:#1a1a1a;
     border-radius:12px;
     overflow:hidden;
-    transition:.2s;
+    transition:0.25s;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+}
+.card:hover{
+    transform:scale(1.04);
+    box-shadow:0 0 20px rgba(88,101,242,0.4);
 }
 
-.card:hover{ transform:translateY(-3px); }
-
+/* COVER */
 .cover{
-    height:140px;
-    background:#222;
+    height:170px;
     background-size:cover;
     background-position:center;
 }
 
-.title{ font-weight:bold; padding:10px; }
-
-.accounts,.platforms{
-    padding:0 10px;
-    font-size:12px;
-    color:#bbb;
-    margin-bottom:6px;
-}
-
-.status{
-    padding:0 10px 12px;
-    font-size:12px;
+/* TITLE */
+.title{
+    font-size:13px;
     font-weight:bold;
+    padding:8px;
 }
 
-.finished{ color:#4ade80; }
-.progress{ color:#facc15; }
-.none{ color:white; }
+/* PLATFORM TEXT */
+.platforms{
+    padding:0 8px 6px;
+    font-size:11px;
+    color:#bbb;
+}
 
+/* STATUS */
+.status{
+    font-size:11px;
+    padding:0 8px 10px;
+}
+
+.finished{color:#4ade80;}
+.progress{color:#facc15;}
+.none{color:#777;}
+
+/* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
     display:none;
-    margin-top:20px;
+    margin-top:10px;
 }
-
-th{ background:#1c1c1c; }
 
 th,td{
     padding:10px;
     border-bottom:1px solid #333;
     text-align:left;
+    vertical-align:middle;
+}
+
+th{
+    background:#1c1c1c;
+    font-weight:600;
+}
+
+/* highlighted row */
+.row-highlight{
+    animation: highlightFlash 2.5s ease-in-out;
+    box-shadow:0 0 18px rgba(88,101,242,0.25) inset;
+    background: linear-gradient(90deg, rgba(88,101,242,0.06), rgba(88,101,242,0.02));
+}
+
+@keyframes highlightFlash{
+    0%{ background: rgba(88,101,242,0.12); }
+    50%{ background: rgba(88,101,242,0.04); }
+    100%{ background: rgba(88,101,242,0.00); }
+}
+
+/* small platform badges inside table cells */
+.platform-badges{
+    font-size:12px;
+    color:#ddd;
+}
+
+.platform-badges span{
+    display:inline-block;
+    margin-right:6px;
+    padding:4px 8px;
+    background:#111;
+    border-radius:6px;
+    border:1px solid #222;
+}
+
+/* responsive table on small screens */
+@media(max-width:700px){
+    table, thead, tbody, th, td, tr { display:block; }
+    thead { display:none; }
+    tr { margin-bottom:12px; border-bottom:1px solid #333; padding-bottom:8px; }
+    td { padding:6px 0; }
+    td::before { font-weight:600; display:block; color:#888; margin-bottom:4px; }
+    td[data-label="Game"]::before{ content: "Game"; }
+    td[data-label="Pogarici"]::before{ content: "Pogarici"; }
+    td[data-label="Batman"]::before{ content: "Batman"; }
+    td[data-label="Status"]::before{ content: "Status"; }
+    td[data-label="Date Added"]::before{ content: "Date Added"; }
 }
 
 </style>
@@ -155,46 +250,66 @@ th,td{
 
 <body>
 
-<h1>🎮 Game Library</h1>
-
-<div class="sticky-bar">
-
-    <div class="stats" id="stats"></div>
-
-    <div class="tools">
-        <input type="text" id="search" placeholder="Search game...">
-
-        <select id="sort">
-            <option value="">Sort</option>
-            <option value="az">A‑Z ↑</option>
-            <option value="za">Z‑A ↓</option>
-            <option value="dateAsc">Date ↑</option>
-            <option value="dateDesc">Date ↓</option>
-        </select>
-    </div>
-
-    <div class="controls">
-        <div class="left-controls">
-            <button id="gridBtn" class="btn active">Grid</button>
-            <button id="tableBtn" class="btn">Table</button>
-        </div>
-
-        <div class="right-controls">
-            <button id="pogariciBtn" class="btn">POGARICI</button>
-            <button id="batmanBtn" class="btn">BATMAN</button>
-        </div>
-    </div>
-
+<div class="header-row">
+  <h1>🎮 Game Library</h1>
+  <div class="total-badge" id="totalBadge">0 Games</div>
 </div>
 
-<div id="grid" class="grid"></div>
+<!-- PLATFORM FILTERS (EXCLUSIVE) -->
+<div class="stats" id="statsContainer">
+  <div class="stat" data-platform="steam">
+    <div class="plat-name">STEAM</div>
+    <div class="plat-counts" id="steamCounts">0</div>
+  </div>
+  <div class="stat" data-platform="epic">
+    <div class="plat-name">EPIC</div>
+    <div class="plat-counts" id="epicCounts">0</div>
+  </div>
+  <div class="stat" data-platform="gog">
+    <div class="plat-name">GOG</div>
+    <div class="plat-counts" id="gogCounts">0</div>
+  </div>
+  <div class="stat" data-platform="ubisoft">
+    <div class="plat-name">UBISOFT</div>
+    <div class="plat-counts" id="ubisoftCounts">0</div>
+  </div>
+  <div class="stat" data-platform="ps4">
+    <div class="plat-name">PS4</div>
+    <div class="plat-counts" id="ps4Counts">0</div>
+  </div>
+</div>
 
+<!-- SEARCH (identical placement and style to previous requested version) -->
+<div class="filters">
+  <input id="search" placeholder="Search games...">
+</div>
+
+<!-- VIEW + ACCOUNT BUTTONS (search is above these buttons) -->
+<div class="view-row">
+  <div class="view-left">
+    <button id="gridBtn" class="active">Grid</button>
+    <button id="tableBtn">Table</button>
+  </div>
+
+  <div class="view-right">
+    <button id="pogarBtn">Pogarici</button>
+    <button id="batmanBtn">Batman</button>
+    <button id="updateBtn" title="Fetch gamelist.json and embed into this page">Update Library</button>
+  </div>
+</div>
+
+<br>
+
+<!-- GRID -->
+<div class="grid" id="grid"></div>
+
+<!-- TABLE -->
 <table id="table">
 <thead>
 <tr>
 <th>Game</th>
-<th>Account</th>
-<th>Platform</th>
+<th>Pogarici</th>
+<th>Batman</th>
 <th>Status</th>
 <th>Date Added</th>
 </tr>
@@ -202,233 +317,461 @@ th,td{
 <tbody id="tbody"></tbody>
 </table>
 
+<!-- Embedded data holder (optional) -->
+<script id="embeddedData" type="application/json" style="display:none"></script>
+
 <script>
+/*
+  New features in this version:
+  - "Update Library" button (right side) that fetches gamelist.json and embeds it into the page for instant access.
+  - When Update Library runs successfully it:
+      * replaces the in-memory games list with the fetched data (converted),
+      * stores the raw JSON into a hidden <script id="embeddedData"> so the page contains the full dataset,
+      * saves the raw JSON into localStorage for faster reloads (optional),
+      * updates the fixed total count (totalBadge) to the full database size.
+  - On page load the script checks localStorage and the embeddedData script tag first, so if you previously updated the library it will use the embedded copy (no network wait).
+  - The total number shown on the right is always the full database count (not the filtered subtotal).
+*/
 
-const API_URL = "./games.json";
+/* Platform mapping: key fragments in JSON -> slug and display name */
+const PLATFORM_KEYS = [
+  { key: "STEAM", slug: "steam", name: "Steam" },
+  { key: "EPIC", slug: "epic", name: "Epic" },
+  { key: "GOG", slug: "gog", name: "GOG" },
+  { key: "UBISOFT", slug: "ubisoft", name: "UBISOFT" },
+  { key: "PS4", slug: "ps4", name: "PS4" }
+];
 
-/* ✅ CACHE SETTINGS */
-const CACHE_KEY = "gameLibraryCache";
-const CACHE_TIME = 24 * 60 * 60 * 1000; // 24h
+/* --- Embedded gamelist.json sample provided by user (initial dataset) --- */
+const initialExternalData = [
+{"Game":"112 Operator","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"09.08.2025"},
+{"Game":"20 Minutes Till Dawn","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"03.01.2024"},
+{"Game":"20XX","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"31.07.2020"},
+{"Game":"3 out of 10: Season One - 5 Ep.","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"28.09.2020"},
+{"Game":"3 out of 10: Season Two","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"13.04.2021"},
+{"Game":"3on3 Freestyle","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"TRUE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"2016-2023"},
+{"Game":"911 Operator","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"TRUE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"27.10.2025"},
+{"Game":"A Game Of Thrones: The Board Game Digital Edition","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"26.06.2022"},
+{"Game":"A Plague Tale: Innocence","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"05.08.2021"},
+{"Game":"A Story About My Uncle","Pogarici":"FALSE","Batman":"TRUE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"TRUE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"2016-2023"},
+{"Game":"A Total War Saga: TROY","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"13.08.2020"},
+{"Game":"Absolute Drift","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"18.02.2021"},
+{"Game":"ABZU","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"09.10.2020"},
+{"Game":"Adios","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"28.01.2023"},
+{"Game":"Aerial_Knight's Never Yield","Pogarici":"TRUE","Batman":"FALSE","EPIC (P)":"TRUE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"FALSE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"","DATE OF ENTRY":"01.03.2024"},
+{"Game":"Age of Empires II (2013)","Pogarici":"FALSE","Batman":"TRUE","EPIC (P)":"FALSE","STEAM (P)":"FALSE","GOG (P)":"FALSE","UBISOFT (P)":"FALSE","PS4 (P)":"FALSE","EPIC (B)":"FALSE","STEAM (B)":"TRUE","GOG (B)":"FALSE","UBISOFT (B)":"FALSE","Status":"Finished","DATE OF ENTRY":"2016-2023"}
+];
+/* --- end initial data --- */
 
-let games = [];
+let games = []; // internal normalized list
 let selectedPlatform = null;
-let selectedAccount = null;
+let accountFilter = null; // 'pogarici' | 'batman' | null
+let lastHighlightedRowId = null;
+let fullTotal = 0; // fixed total of the database (used for totalBadge)
 
+/* DOM refs */
 const grid = document.getElementById("grid");
-const table = document.getElementById("table");
 const tbody = document.getElementById("tbody");
-const stats = document.getElementById("stats");
+const search = document.getElementById("search");
+const totalBadge = document.getElementById("totalBadge");
+const table = document.getElementById("table");
 
-const pogariciBtn = document.getElementById("pogariciBtn");
+const pogarBtn = document.getElementById("pogarBtn");
 const batmanBtn = document.getElementById("batmanBtn");
+const updateBtn = document.getElementById("updateBtn");
+const embeddedDataScript = document.getElementById("embeddedData");
 
-function isTrue(v){
-    return v === true || v === "TRUE" || v === "true";
+/* Utility: normalize boolean-like strings */
+function truthy(val){
+  if(val === true || val === false) return val;
+  if(!val && val !== 0) return false;
+  const s = String(val).trim().toLowerCase();
+  return s === "true" || s === "yes" || s === "1";
 }
 
-function formatDate(value){
-    if(!value) return "-";
-    const d = new Date(value);
-    if(isNaN(d)) return value;
+/* Convert a single JSON row (user-provided format) into internal game object */
+function convertRow(row){
+  const name = row["Game"] || row["game"] || row["Name"] || row["name"] || "Unknown";
+  const pog = truthy(row["Pogarici"]);
+  const bat = truthy(row["Batman"]);
+  const status = row["Status"] || row["status"] || "";
+  const date = row["DATE OF ENTRY"] || row["Date"] || row["date"] || "";
 
-    const day = String(d.getDate()).padStart(2,'0');
-    const month = String(d.getMonth()+1).padStart(2,'0');
-    const year = d.getFullYear();
+  const pogariciPlatforms = [];
+  const batmanPlatforms = [];
+  const platformsSet = new Set();
 
-    return `${day}.${month}.${year}`;
-}
+  PLATFORM_KEYS.forEach(pk=>{
+    const keyP = `${pk.key} (P)`;
+    const keyB = `${pk.key} (B)`;
+    const altKeyP = `${pk.key} (p)`;
+    const altKeyB = `${pk.key} (b)`;
 
-async function getCover(name){
-    try{
-        const res = await fetch(`https://api.rawg.io/api/games?search=${encodeURIComponent(name)}`);
-        const data = await res.json();
-
-        if(data.results && data.results.length > 0){
-            return data.results[0].background_image;
-        }
-    }catch{}
-    return "";
-}
-
-/* ✅ CACHED LOAD */
-async function loadData(){
-
-    const cached = localStorage.getItem(CACHE_KEY);
-
-    if(cached){
-        const parsed = JSON.parse(cached);
-
-        if(Date.now() - parsed.timestamp < CACHE_TIME){
-            games = parsed.data;
-            renderStats();
-            render();
-            console.log("✅ Loaded from cache");
-            return;
-        }
+    if(row.hasOwnProperty(keyP) && truthy(row[keyP])){
+      pogariciPlatforms.push(pk.slug);
+      platformsSet.add(pk.slug);
+    } else if(row.hasOwnProperty(altKeyP) && truthy(row[altKeyP])){
+      pogariciPlatforms.push(pk.slug);
+      platformsSet.add(pk.slug);
     }
 
-    console.log("⏳ Fetching fresh data...");
+    if(row.hasOwnProperty(keyB) && truthy(row[keyB])){
+      batmanPlatforms.push(pk.slug);
+      platformsSet.add(pk.slug);
+    } else if(row.hasOwnProperty(altKeyB) && truthy(row[altKeyB])){
+      batmanPlatforms.push(pk.slug);
+      platformsSet.add(pk.slug);
+    }
+  });
 
-    const res = await fetch(API_URL);
-    const data = await res.json();
+  const platforms = Array.from(platformsSet);
 
-    games = await Promise.all(data.map(async r=>{
+  // cover: not provided in sample; leave empty
+  const cover = "";
 
-        let accounts = [];
-        if(isTrue(r["Pogarici"])) accounts.push("Pogarici");
-        if(isTrue(r["Batman"])) accounts.push("Batman");
-
-        let platforms = [];
-
-        if(isTrue(r["EPIC (P)"]) || isTrue(r["EPIC (B)"])) platforms.push("EPIC");
-        if(isTrue(r["STEAM (P)"]) || isTrue(r["STEAM (B)"])) platforms.push("STEAM");
-        if(isTrue(r["GOG (P)"]) || isTrue(r["GOG (B)"])) platforms.push("GOG");
-        if(isTrue(r["UBISOFT (P)"]) || isTrue(r["UBISOFT (B)"])) platforms.push("UBISOFT");
-        if(isTrue(r["PS4 (P)"])) platforms.push("PS4");
-
-        return {
-            game:r["Game"] || "-",
-            accounts,
-            platforms,
-            status:r["Status"] || "-",
-            date:formatDate(r["DATE OF ENTRY"]),
-            rawDate:new Date(r["DATE OF ENTRY"]),
-            cover: await getCover(r["Game"])
-        };
-
-    }));
-
-    localStorage.setItem(CACHE_KEY, JSON.stringify({
-        timestamp: Date.now(),
-        data: games
-    }));
-
-    console.log("✅ Cache saved");
-
-    renderStats();
-    render();
+  return {
+    name,
+    cover,
+    platforms,
+    pogarici: pog,
+    batman: bat,
+    pogariciPlatforms,
+    batmanPlatforms,
+    status,
+    date
+  };
 }
 
-function renderStats(){
+/* Initialize games from embeddedData (localStorage or initial sample) */
+function initializeData(){
+  // Priority: embeddedData script tag -> localStorage -> initialExternalData
+  try{
+    const embeddedText = embeddedDataScript.textContent && embeddedDataScript.textContent.trim();
+    if(embeddedText){
+      const parsed = JSON.parse(embeddedText);
+      if(Array.isArray(parsed) && parsed.length>0){
+        games = parsed.map(convertRow);
+        setFullTotalAndCounts(parsed.length);
+        render();
+        return;
+      }
+    }
+  }catch(e){
+    console.warn("embeddedData parse failed", e);
+  }
 
-    const counts = {EPIC:0,STEAM:0,GOG:0,UBISOFT:0,PS4:0};
+  try{
+    const stored = localStorage.getItem("embeddedGames");
+    if(stored){
+      const parsed = JSON.parse(stored);
+      if(Array.isArray(parsed) && parsed.length>0){
+        games = parsed.map(convertRow);
+        setFullTotalAndCounts(parsed.length);
+        render();
+        return;
+      }
+    }
+  }catch(e){
+    console.warn("localStorage parse failed", e);
+  }
 
-    games.forEach(g=>{
-        g.platforms.forEach(p=> counts[p]++);
+  // fallback to initial sample
+  games = initialExternalData.map(convertRow);
+  setFullTotalAndCounts(initialExternalData.length);
+  render();
+}
+
+/* Set fullTotal and update platform counts and totalBadge */
+function setFullTotalAndCounts(totalCount){
+  fullTotal = totalCount;
+  totalBadge.textContent = `${fullTotal} Games`;
+  updatePlatformCounts(); // compute combined counts per platform from current games array
+}
+
+/* Update platform card counts (combined P+B per platform) */
+function updatePlatformCounts(){
+  const counts = {};
+  PLATFORM_KEYS.forEach(pk=>{
+    counts[pk.slug] = 0;
+  });
+
+  games.forEach(g=>{
+    PLATFORM_KEYS.forEach(pk=>{
+      const hasP = g.pogariciPlatforms && g.pogariciPlatforms.includes(pk.slug);
+      const hasB = g.batmanPlatforms && g.batmanPlatforms.includes(pk.slug);
+      if(hasP || hasB) counts[pk.slug]++;
     });
+  });
 
-    stats.innerHTML = "";
-
-    Object.keys(counts).forEach(platform=>{
-        const active = selectedPlatform === platform ? "active" : "";
-        stats.innerHTML += `
-        <div class="stat ${active}" onclick="filterPlatform('${platform}')">
-            ${platform}<br><small>${counts[platform]}</small>
-        </div>`;
-    });
+  document.getElementById("steamCounts").textContent = `${counts.steam}`;
+  document.getElementById("epicCounts").textContent  = `${counts.epic}`;
+  document.getElementById("gogCounts").textContent   = `${counts.gog}`;
+  document.getElementById("ubisoftCounts").textContent = `${counts.ubisoft}`;
+  document.getElementById("ps4Counts").textContent   = `${counts.ps4}`;
 }
 
-function filterPlatform(platform){
-    selectedPlatform = selectedPlatform === platform ? null : platform;
-    renderStats();
+/* PLATFORM FILTER (EXCLUSIVE TOGGLE) */
+document.querySelectorAll(".stat").forEach(el=>{
+  el.onclick=()=>{
+    const p = el.dataset.platform;
+
+    /* TOGGLE OFF IF SAME */
+    if(selectedPlatform === p){
+      selectedPlatform = null;
+      document.querySelectorAll(".stat").forEach(x=>x.classList.remove("active"));
+    }else{
+      selectedPlatform = p;
+      document.querySelectorAll(".stat").forEach(x=>{
+        x.classList.remove("active");
+      });
+      el.classList.add("active");
+    }
+
     render();
-}
+  };
+});
 
-function filterAccount(account){
-    selectedAccount = selectedAccount === account ? null : account;
+/* ACCOUNT FILTER BUTTONS (Pogarici / Batman) */
+pogarBtn.addEventListener("click", ()=>{
+  if(accountFilter === "pogarici"){
+    accountFilter = null;
+    pogarBtn.classList.remove("active");
+  } else {
+    accountFilter = "pogarici";
+    pogarBtn.classList.add("active");
+    batmanBtn.classList.remove("active");
+  }
+  render();
+});
 
-    pogariciBtn.classList.toggle("active", selectedAccount === "Pogarici");
-    batmanBtn.classList.toggle("active", selectedAccount === "Batman");
+batmanBtn.addEventListener("click", ()=>{
+  if(accountFilter === "batman"){
+    accountFilter = null;
+    batmanBtn.classList.remove("active");
+  } else {
+    accountFilter = "batman";
+    batmanBtn.classList.add("active");
+    pogarBtn.classList.remove("active");
+  }
+  render();
+});
 
+/* UPDATE LIBRARY BUTTON
+   - Fetches gamelist.json from same folder
+   - On success: embeds JSON into <script id="embeddedData">, saves to localStorage, updates in-memory games and fullTotal
+*/
+updateBtn.addEventListener("click", async ()=>{
+  updateBtn.disabled = true;
+  updateBtn.textContent = "Updating...";
+  try{
+    const resp = await fetch("gamelist.json", {cache: "no-store"});
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    if(!Array.isArray(data)) throw new Error("Invalid JSON format (expected array)");
+
+    // embed into script tag and localStorage
+    const raw = JSON.stringify(data);
+    embeddedDataScript.textContent = raw;
+    try{ localStorage.setItem("embeddedGames", raw); }catch(e){ console.warn("localStorage set failed", e); }
+
+    // update in-memory games
+    games = data.map(convertRow);
+    setFullTotalAndCounts(data.length);
+    updatePlatformCounts();
     render();
+
+    // visual feedback
+    updateBtn.textContent = "Updated ✓";
+    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1400);
+  }catch(err){
+    console.error("Update failed", err);
+    updateBtn.textContent = "Update Failed";
+    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1400);
+    alert("Update failed. Make sure gamelist.json is reachable in the same folder and is valid JSON.");
+  }finally{
+    updateBtn.disabled = false;
+  }
+});
+
+/* FILTER LOGIC */
+function filterGames(){
+  let list = games.slice();
+
+  /* PLATFORM FILTER (SINGLE SELECT) */
+  if(selectedPlatform){
+    list = list.filter(g => g.platforms.includes(selectedPlatform));
+  }
+
+  /* ACCOUNT FILTER (Pogarici or Batman) */
+  if(accountFilter === "pogarici"){
+    list = list.filter(g => g.pogarici === true || (g.pogariciPlatforms && g.pogariciPlatforms.length>0));
+  } else if(accountFilter === "batman"){
+    list = list.filter(g => g.batman === true || (g.batmanPlatforms && g.batmanPlatforms.length>0));
+  }
+
+  /* SEARCH */
+  if(search.value){
+    list = list.filter(g =>
+      g.name.toLowerCase().includes(search.value.toLowerCase())
+    );
+  }
+
+  return list;
 }
 
-function getFiltered(){
-
-    let list = [...games];
-
-    const q = document.getElementById("search").value.toLowerCase();
-    if(q){
-        list = list.filter(g=> g.game.toLowerCase().includes(q));
-    }
-
-    if(selectedPlatform){
-        list = list.filter(g=> g.platforms.includes(selectedPlatform));
-    }
-
-    if(selectedAccount){
-        list = list.filter(g=> g.accounts.includes(selectedAccount));
-    }
-
-    const sort = document.getElementById("sort").value;
-
-    if(sort === "az") list.sort((a,b)=> a.game.localeCompare(b.game));
-    if(sort === "za") list.sort((a,b)=> b.game.localeCompare(a.game));
-    if(sort === "dateAsc") list.sort((a,b)=> a.rawDate - b.rawDate);
-    if(sort === "dateDesc") list.sort((a,b)=> b.rawDate - a.rawDate);
-
-    return list;
-}
-
+/* GRID RENDER */
 function renderGrid(list){
-    grid.innerHTML = "";
-    list.forEach(g=>{
-        let cls = "none";
-        if(g.status === "Finished") cls = "finished";
-        if(g.status === "In Progress") cls = "progress";
+  grid.innerHTML="";
 
-        grid.innerHTML += `
-        <div class="card">
-            <div class="cover" style="background-image:url('${g.cover || ""}')"></div>
-            <div class="title">${g.game}</div>
-            <div class="accounts">${g.accounts.join(" | ") || "-"}</div>
-            <div class="platforms">${g.platforms.join(" | ") || "-"}</div>
-            <div class="status ${cls}">${g.status}</div>
-        </div>`;
+  list.forEach((g)=>{
+    // use a stable index based on original games array to map to table row id
+    const originalIndex = games.indexOf(g);
+    grid.innerHTML+=`
+    <div class="card" data-index="${originalIndex}" role="button" tabindex="0" aria-label="Open ${escapeHtml(g.name)} in table">
+      <div class="cover" style="background-image:url('${g.cover || "https://via.placeholder.com/300x170?text=No+Cover"}')"></div>
+
+      <div class="title">${escapeHtml(g.name)}</div>
+
+      <div class="platforms">
+        ${g.platforms.map(p=>platformDisplayName(p)).join(" | ").toUpperCase()}
+      </div>
+
+      <div class="status ${g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none"}">
+        ${escapeHtml(g.status || "")}
+      </div>
+    </div>
+    `;
+  });
+
+  // attach click handlers to cards (after insertion)
+  grid.querySelectorAll(".card").forEach(card=>{
+    card.addEventListener("click", onCardClick);
+    card.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter" || e.key === " ") onCardClick.call(card, e);
     });
+  });
 }
 
+/* handler when clicking a grid card */
+function onCardClick(e){
+  const idx = Number(this.dataset.index);
+  if(Number.isNaN(idx)) return;
+
+  // switch to table view and highlight the row for this game
+  showTableView();
+
+  // render ensures rows exist; then highlight and scroll
+  // use a small timeout to allow table to render and layout
+  setTimeout(()=>{
+    const rowId = `row-${idx}`;
+    const row = document.getElementById(rowId);
+    if(row){
+      // remove previous highlight if any
+      if(lastHighlightedRowId){
+        const prev = document.getElementById(lastHighlightedRowId);
+        if(prev) prev.classList.remove("row-highlight");
+      }
+
+      row.classList.add("row-highlight");
+      lastHighlightedRowId = rowId;
+
+      // scroll into view smoothly and center if possible
+      row.scrollIntoView({behavior:"smooth", block:"center"});
+
+      // remove highlight after 3 seconds
+      setTimeout(()=>{
+        row.classList.remove("row-highlight");
+        lastHighlightedRowId = null;
+      }, 3000);
+    }
+  }, 120);
+}
+
+/* TABLE RENDER */
 function renderTable(list){
-    tbody.innerHTML = "";
-    list.forEach(g=>{
-        tbody.innerHTML += `
-        <tr>
-            <td>${g.game}</td>
-            <td>${g.accounts.join(" | ") || "-"}</td>
-            <td>${g.platforms.join(" | ") || "-"}</td>
-            <td>${g.status}</td>
-            <td>${g.date}</td>
-        </tr>`;
-    });
+  tbody.innerHTML="";
+
+  list.forEach(g=>{
+    const originalIndex = games.indexOf(g);
+    const rowId = `row-${originalIndex}`;
+
+    const pogPlatforms = g.pogariciPlatforms && g.pogariciPlatforms.length
+      ? g.pogariciPlatforms.map(p=>platformDisplayName(p)).join(" | ")
+      : (g.pogarici ? "-" : "-");
+
+    const batPlatforms = g.batmanPlatforms && g.batmanPlatforms.length
+      ? g.batmanPlatforms.map(p=>platformDisplayName(p)).join(" | ")
+      : (g.batman ? "-" : "-");
+
+    tbody.innerHTML+=`
+    <tr id="${rowId}">
+      <td data-label="Game">${escapeHtml(g.name)}</td>
+      <td data-label="Pogarici">${escapeHtml(pogPlatforms)}</td>
+      <td data-label="Batman">${escapeHtml(batPlatforms)}</td>
+      <td data-label="Status" class="${g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none"}">${escapeHtml(g.status || "")}</td>
+      <td data-label="Date Added">${escapeHtml(g.date || "")}</td>
+    </tr>
+    `;
+  });
 }
 
+/* MASTER RENDER */
 function render(){
-    const list = getFiltered();
-    renderGrid(list);
-    renderTable(list);
+  const list = filterGames();
+  renderGrid(list);
+  renderTable(list);
+
+  // NOTE: totalBadge intentionally NOT updated here so it remains the fixed total of the database
 }
 
-document.getElementById("search").addEventListener("input",render);
-document.getElementById("sort").addEventListener("change",render);
+/* SEARCH */
+search.addEventListener("input", render);
 
-pogariciBtn.addEventListener("click",()=> filterAccount("Pogarici"));
-batmanBtn.addEventListener("click",()=> filterAccount("Batman"));
+/* VIEW TOGGLE */
+const gridBtn=document.getElementById("gridBtn");
+const tableBtn=document.getElementById("tableBtn");
 
-gridBtn.addEventListener("click",()=>{
-    grid.style.display="grid";
-    table.style.display="none";
-    gridBtn.classList.add("active");
-    tableBtn.classList.remove("active");
-});
+gridBtn.onclick=()=>{
+  showGridView();
+};
 
-tableBtn.addEventListener("click",()=>{
-    grid.style.display="none";
-    table.style.display="table";
-    tableBtn.classList.add("active");
-    gridBtn.classList.remove("active");
-});
+tableBtn.onclick=()=>{
+  showTableView();
+};
 
-loadData();
+function showGridView(){
+  grid.style.display="grid";
+  table.style.display="none";
+  gridBtn.classList.add("active");
+  tableBtn.classList.remove("active");
+}
+
+function showTableView(){
+  grid.style.display="none";
+  table.style.display="table";
+  tableBtn.classList.add("active");
+  gridBtn.classList.remove("active");
+}
+
+/* Helpers */
+function platformDisplayName(slug){
+  const found = PLATFORM_KEYS.find(p=>p.slug === slug);
+  return found ? found.name : slug;
+}
+
+/* simple HTML escape to avoid injection when inserting names */
+function escapeHtml(str){
+  if(!str && str !== 0) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* initialize from embedded data / localStorage / fallback */
+initializeData();
 
 </script>
 
