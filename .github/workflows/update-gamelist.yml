@@ -58,4 +58,4 @@ jobs:
             exit 0
           fi
           git commit -m "Update gamelist.json from Apps Script: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
