@@ -1,9 +1,9 @@
 name: Update gamelist.json from Apps Script
 
 on:
-  workflow_dispatch: {}        # manual trigger from Actions UI
+  workflow_dispatch: {}
   schedule:
-    - cron: '0 2 * * *'       # daily at 02:00 UTC (adjust as needed)
+    - cron: '0 2 * * *'
 
 jobs:
   fetch-and-commit:
@@ -15,23 +15,48 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Fetch gamelist from Apps Script
+      - name: Fetch gamelist from Apps Script (with diagnostics)
         id: fetch
         run: |
           set -euo pipefail
           URL="https://script.google.com/macros/s/AKfycbx78biA9_LgLZy-PdpkEmiyBXd5q8fI9QJMCKc2yXqyb3wAL1KptkYpytig4q7uDzYFiw/exec"
           echo "Fetching $URL"
-          curl -fsS "$URL" -o gamelist.json
-          # Validate JSON; jq is available on ubuntu-latest
-          jq . gamelist.json > /dev/null
+          # Fetch and capture HTTP status and body
+          HTTP_OUT=$(mktemp)
+          HTTP_STATUS=$(curl -sS -w "%{http_code}" -o "$HTTP_OUT" "$URL" || true)
+          echo "HTTP status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "Fetch failed. Response body:"
+            sed -n '1,200p' "$HTTP_OUT" || true
+            echo "---- end response ----"
+            rm -f "$HTTP_OUT"
+            exit 5
+          fi
+          mv "$HTTP_OUT" gamelist.json
+          echo "Fetched $(wc -c < gamelist.json) bytes."
 
-      - name: Show diff (for logs)
+      - name: Validate JSON
         run: |
-          git status --porcelain || true
-          git --no-pager diff --no-index -- gamelist.json gamelist.json || true
+          set -euo pipefail
+          if ! jq . gamelist.json > /dev/null 2>&1; then
+            echo "Invalid JSON in gamelist.json. Showing first 200 chars:"
+            head -c 200 gamelist.json || true
+            exit 6
+          fi
+          echo "JSON validated."
+
+      - name: Show file size and preview
+        run: |
+          echo "Size: $(wc -c < gamelist.json) bytes"
+          echo "Preview (first 200 chars):"
+          head -c 200 gamelist.json || true
+          echo
+          echo "Preview (first 5 lines):"
+          head -n 5 gamelist.json || true
 
       - name: Commit gamelist.json if changed
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add gamelist.json
