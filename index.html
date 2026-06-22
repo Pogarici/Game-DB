@@ -167,52 +167,71 @@
       td[data-label="Status"]::before{ content: "Status"; }
       td[data-label="Date Added"]::before{ content: "Date Added"; }
   }
+
+.sticky-top{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #0f0f0f;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.sticky-top::after{
+  content:"";
+  display:block;
+  height:1px;
+  background:#222;
+  margin-top:10px;
+}
 </style>
 </head>
 <body>
 
-<div class="header-row">
-  <h1>🎮 Game Library</h1>
-  <div class="total-badge" id="totalBadge">Loading...</div>
-</div>
-
-<div class="stats" id="statsContainer">
-  <div class="stat" data-platform="steam">
-    <div class="plat-name">STEAM</div>
-    <div class="plat-counts" id="steamCounts">0</div>
-  </div>
-  <div class="stat" data-platform="epic">
-    <div class="plat-name">EPIC</div>
-    <div class="plat-counts" id="epicCounts">0</div>
-  </div>
-  <div class="stat" data-platform="gog">
-    <div class="plat-name">GOG</div>
-    <div class="plat-counts" id="gogCounts">0</div>
-  </div>
-  <div class="stat" data-platform="ubisoft">
-    <div class="plat-name">UBISOFT</div>
-    <div class="plat-counts" id="ubisoftCounts">0</div>
-  </div>
-  <div class="stat" data-platform="ps4">
-    <div class="plat-name">PS4</div>
-    <div class="plat-counts" id="ps4Counts">0</div>
-  </div>
-</div>
-
-<div class="filters">
-  <input id="search" placeholder="Search games...">
-</div>
-
-<div class="view-row">
-  <div class="view-left">
-    <button id="gridBtn" class="active">Grid</button>
-    <button id="tableBtn">Table</button>
+<div class="sticky-top">
+  <div class="header-row">
+    <h1>🎮 Game Library</h1>
+    <div class="total-badge" id="totalBadge">Loading...</div>
   </div>
 
-  <div class="view-right">
-    <button id="pogarBtn">Pogarici</button>
-    <button id="batmanBtn">Batman</button>
-    <button id="updateBtn" title="Manually refresh gamelist.json">Update Library</button>
+  <div class="stats" id="statsContainer">
+    <div class="stat" data-platform="steam">
+      <div class="plat-name">STEAM</div>
+      <div class="plat-counts" id="steamCounts">0</div>
+    </div>
+    <div class="stat" data-platform="epic">
+      <div class="plat-name">EPIC</div>
+      <div class="plat-counts" id="epicCounts">0</div>
+    </div>
+    <div class="stat" data-platform="gog">
+      <div class="plat-name">GOG</div>
+      <div class="plat-counts" id="gogCounts">0</div>
+    </div>
+    <div class="stat" data-platform="ubisoft">
+      <div class="plat-name">UBISOFT</div>
+      <div class="plat-counts" id="ubisoftCounts">0</div>
+    </div>
+    <div class="stat" data-platform="ps4">
+      <div class="plat-name">PS4</div>
+      <div class="plat-counts" id="ps4Counts">0</div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <input id="search" placeholder="Search games...">
+  </div>
+
+  <div class="view-row">
+    <div class="view-left">
+      <button id="gridBtn" class="active">Grid</button>
+      <button id="tableBtn">Table</button>
+    </div>
+
+    <div class="view-right">
+      <button id="pogarBtn">Pogarici</button>
+      <button id="batmanBtn">Batman</button>
+      <button id="updateBtn">Update Library</button>
+    </div>
   </div>
 </div>
 
