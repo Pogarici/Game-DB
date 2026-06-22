@@ -665,13 +665,6 @@ async function loadGameList(){
   }
 }
 
-/* Format time as MM:SS */
-function formatTime(seconds){
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
 /* Trigger GitHub Actions workflow */
 async function triggerWorkflow(){
   const PAT = localStorage.getItem("github_pat");
@@ -730,12 +723,12 @@ updateBtn.addEventListener("click", async ()=>{
     
     // Wait 2 seconds before starting countdown
     setTimeout(()=>{
-      let countdown = 60;
-      updateBtn.textContent = `${formatTime(countdown)}`;
+      let countdown = 59;
+      updateBtn.textContent = countdown;
       
       const countdownInterval = setInterval(()=>{
         countdown--;
-        updateBtn.textContent = `${formatTime(countdown)}`;
+        updateBtn.textContent = countdown;
         
         if(countdown <= 0){
           clearInterval(countdownInterval);
@@ -744,11 +737,13 @@ updateBtn.addEventListener("click", async ()=>{
           updateBtn.textContent = "Updated ✓";
           loadGameList();
           
-          // Keep "Updated ✓" for 5 seconds
+          // Keep "Updated ✓" for 2.5 seconds, then auto-refresh the page
           setTimeout(()=>{
             updateBtn.textContent = "Update Library";
             updateBtn.disabled = false;
-          }, 5000);
+            // Auto-refresh the entire page
+            location.reload();
+          }, 2500);
         }
       }, 1000);
     }, 2000);
