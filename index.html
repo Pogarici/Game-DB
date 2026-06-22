@@ -665,19 +665,75 @@ async function loadGameList(){
   }
 }
 
+/* Trigger GitHub Actions workflow */
+async function triggerWorkflow(){
+  const PAT = localStorage.getItem("github_pat");
+  if(!PAT){
+    updateBtn.textContent = "Setup Required";
+    const token = prompt("Enter your GitHub Personal Access Token (with 'repo' and 'workflow' scopes):");
+    if(!token){
+      updateBtn.textContent = "Update Library";
+      return false;
+    }
+    localStorage.setItem("github_pat", token);
+  }
+
+  try{
+    const token = localStorage.getItem("github_pat");
+    const owner = "Pogarici";
+    const repo = "Game-DB";
+    const workflow = "update-gamelist.yml";
+    const branch = "main";
+
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      body: JSON.stringify({
+        ref: branch
+      })
+    });
+
+    if(!response.ok){
+      const errorData = await response.text();
+      console.error("Workflow trigger failed:", response.status, errorData);
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    console.log("Workflow triggered successfully!");
+    return true;
+  }catch(err){
+    console.error("Trigger failed", err);
+    return false;
+  }
+}
+
 /* Manual update button */
 updateBtn.addEventListener("click", async ()=>{
   updateBtn.disabled = true;
-  updateBtn.textContent = "Updating...";
-  const success = await loadGameList();
-  if(success){
-    updateBtn.textContent = "Updated ✓";
-    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
+  updateBtn.textContent = "Triggering...";
+  
+  const workflowSuccess = await triggerWorkflow();
+  
+  if(workflowSuccess){
+    updateBtn.textContent = "Workflow Started ✓";
+    // Wait a few seconds, then reload the JSON to reflect changes
+    setTimeout(async ()=>{
+      const dataSuccess = await loadGameList();
+      if(dataSuccess){
+        updateBtn.textContent = "Updated ✓";
+      } else {
+        updateBtn.textContent = "Data Load Failed";
+      }
+      setTimeout(()=>{ updateBtn.textContent = "Update Library"; updateBtn.disabled = false; }, 1200);
+    }, 3000);
   } else {
-    updateBtn.textContent = "Update Failed";
-    setTimeout(()=>{ updateBtn.textContent = "Update Library"; }, 1200);
+    updateBtn.textContent = "Trigger Failed";
+    setTimeout(()=>{ updateBtn.textContent = "Update Library"; updateBtn.disabled = false; }, 1200);
   }
-  updateBtn.disabled = false;
 });
 
 /* Load on page load */
