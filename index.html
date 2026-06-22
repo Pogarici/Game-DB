@@ -665,6 +665,13 @@ async function loadGameList(){
   }
 }
 
+/* Format time as MM:SS */
+function formatTime(seconds){
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
 /* Trigger GitHub Actions workflow */
 async function triggerWorkflow(){
   const PAT = localStorage.getItem("github_pat");
@@ -720,19 +727,37 @@ updateBtn.addEventListener("click", async ()=>{
   
   if(workflowSuccess){
     updateBtn.textContent = "Workflow Started ✓";
-    // Wait a few seconds, then reload the JSON to reflect changes
-    setTimeout(async ()=>{
-      const dataSuccess = await loadGameList();
-      if(dataSuccess){
-        updateBtn.textContent = "Updated ✓";
-      } else {
-        updateBtn.textContent = "Data Load Failed";
-      }
-      setTimeout(()=>{ updateBtn.textContent = "Update Library"; updateBtn.disabled = false; }, 1200);
-    }, 3000);
+    
+    // Wait 2 seconds before starting countdown
+    setTimeout(()=>{
+      let countdown = 60;
+      updateBtn.textContent = `${formatTime(countdown)}`;
+      
+      const countdownInterval = setInterval(()=>{
+        countdown--;
+        updateBtn.textContent = `${formatTime(countdown)}`;
+        
+        if(countdown <= 0){
+          clearInterval(countdownInterval);
+          
+          // Show "Updated ✓" and reload data
+          updateBtn.textContent = "Updated ✓";
+          loadGameList();
+          
+          // Keep "Updated ✓" for 5 seconds
+          setTimeout(()=>{
+            updateBtn.textContent = "Update Library";
+            updateBtn.disabled = false;
+          }, 5000);
+        }
+      }, 1000);
+    }, 2000);
   } else {
     updateBtn.textContent = "Trigger Failed";
-    setTimeout(()=>{ updateBtn.textContent = "Update Library"; updateBtn.disabled = false; }, 1200);
+    setTimeout(()=>{ 
+      updateBtn.textContent = "Update Library"; 
+      updateBtn.disabled = false; 
+    }, 1200);
   }
 });
 
