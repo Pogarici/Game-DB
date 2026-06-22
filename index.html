@@ -184,13 +184,18 @@
   background:#222;
   margin-top:10px;
 }
-
-/* Freeze table header */
-thead th{
+/* ✅ Force sticky table header */
+table thead th {
   position: sticky;
-  top: 140px; /* adjust if needed */
-  z-index: 900;
+  top: 160px; /* adjust depending on your sticky header height */
+  z-index: 1001;
   background: #1c1c1c;
+}
+
+/* Needed to ensure proper stacking */
+table thead {
+  position: sticky;
+  z-index: 1000;
 }
 
 </style>
