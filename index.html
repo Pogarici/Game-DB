@@ -512,11 +512,13 @@ function renderGrid(list){
     if(!vid) return;
     
     const thumbnailBg = bg; // ✅ SAVE CURRENT IMAGE
-    
+
+  // stop other videos
 document.querySelectorAll(".cover").forEach(c => {
   c.innerHTML = "";
 });
-
+    
+ // inject iframe
     cover.innerHTML = `
       <iframe
         width="100%"
@@ -533,6 +535,10 @@ document.querySelectorAll(".cover").forEach(c => {
     e.stopPropagation();
     cover.innerHTML = "";
     cover.style.backgroundImage = `url('${thumbnailBg}')`;
+  });
+    
+    // re-add play button
+    cover.appendChild(play);
   });
 
   cover.appendChild(play);
