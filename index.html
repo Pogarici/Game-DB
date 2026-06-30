@@ -510,7 +510,8 @@ function renderGrid(list){
     const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
     const vid = match ? match[1] : null;
     if(!vid) return;
-
+    
+    const thumbnailBg = bg; // ✅ SAVE CURRENT IMAGE
     
 document.querySelectorAll(".cover").forEach(c => {
   c.innerHTML = "";
@@ -526,6 +527,12 @@ document.querySelectorAll(".cover").forEach(c => {
         allowfullscreen>
       </iframe>
     `;
+    
+// ✅ restore thumbnail when clicking video
+  cover.addEventListener("click", (e) => {
+    e.stopPropagation();
+    cover.innerHTML = "";
+    cover.style.backgroundImage = `url('${thumbnailBg}')`;
   });
 
   cover.appendChild(play);
@@ -633,6 +640,13 @@ function render(){
 
 /* Card click handler */
 function onCardClick(e){
+
+  
+ // ✅ STOP ALL VIDEOS FIRST (ADD THIS BLOCK)
+  document.querySelectorAll(".cover").forEach(c=>{
+    c.innerHTML = "";
+  });
+
   const idx = Number(this.dataset.index);
   if(Number.isNaN(idx)) return;
   showTableView();
