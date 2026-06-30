@@ -317,7 +317,16 @@ function convertRow(row){
   const bat = truthy(row["Batman"]);
   const status = row["Status"] || row["status"] || "";
   const date = row["DATE OF ENTRY"] || row["Date"] || row["date"] || "";
-  const youtube = row["youtube"] || row["YouTube"] || "";
+  const youtube =
+  row["youtube"] ||
+  row["YouTube"] ||
+  row["Youtube"] ||
+  row["YOUTUBE"] ||
+  row["YouTube "] ||   // ✅ handles accidental space
+  row["Trailer"] ||
+  row["Trailer URL"] ||
+  "";
+
 
   const pogariciPlatforms = [];
   const batmanPlatforms = [];
