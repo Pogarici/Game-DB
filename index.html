@@ -449,8 +449,8 @@ function renderGrid(list){
   const frag = document.createDocumentFragment();
   for(const g of list){
     const originalIndex = games.indexOf(g);
-    const card = document.createElement("div");
-    card.className = "card";
+    const cover = document.createElement("div");
+    card.className = "cover";
     card.setAttribute("data-index", originalIndex);
     card.setAttribute("role","button");
     card.setAttribute("tabindex","0");
