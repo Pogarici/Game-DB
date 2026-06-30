@@ -317,6 +317,7 @@ function convertRow(row){
   const bat = truthy(row["Batman"]);
   const status = row["Status"] || row["status"] || "";
   const date = row["DATE OF ENTRY"] || row["Date"] || row["date"] || "";
+  const youtube = row["youtube"] || row["YouTube"] || "";
 
   const pogariciPlatforms = [];
   const batmanPlatforms = [];
@@ -351,6 +352,7 @@ function convertRow(row){
   return {
     name,
     cover,
+    youtube,
     platforms,
     pogarici: pog,
     batman: bat,
@@ -454,9 +456,19 @@ function renderGrid(list){
     card.setAttribute("tabindex","0");
     card.setAttribute("aria-label", `Open ${g.name} in table`);
 
-    const cover = document.createElement("div");
-    cover.className = "cover";
-    cover.style.backgroundImage = `url('${g.cover || "https://via.placeholder.com/300x170?text=No+Cover"}')`;
+    let bg = g.cover;
+
+if(g.youtube){
+  const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
+  const vid = match ? match[1] : null;
+
+  if(vid){
+    bg = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+  }
+}
+
+cover.style.backgroundImage =
+  `url('${bg || "https://via.placeholder.com/300x170?text=No+Preview"}')`;
 
     const title = document.createElement("div");
     title.className = "title";
