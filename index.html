@@ -447,41 +447,74 @@ function renderGrid(list){
   if(!list || list.length === 0) return;
 
   const frag = document.createDocumentFragment();
+
   for(const g of list){
     const originalIndex = games.indexOf(g);
-    const cover = document.createElement("div");
-    card.className = "cover";
+
+    // ✅ Create card
+    const card = document.createElement("div");
+    card.className = "card";
     card.setAttribute("data-index", originalIndex);
     card.setAttribute("role","button");
     card.setAttribute("tabindex","0");
     card.setAttribute("aria-label", `Open ${g.name} in table`);
 
+    // ✅ Create cover
+    const cover = document.createElement("div");
+    cover.className = "cover";
+
+    // ✅ YouTube thumbnail logic
     let bg = g.cover;
 
-if(g.youtube){
-  const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
-  const vid = match ? match[1] : null;
+    if(g.youtube){
+      const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
+      const vid = match ? match[1] : null;
 
-  if(vid){
-    bg = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
-  }
-}
+      if(vid){
+        bg = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+      }
+    }
 
-cover.style.backgroundImage =
-  `url('${bg || "https://via.placeholder.com/300x170?text=No+Preview"}')`;
+    cover.style.backgroundImage =
+      `url('${bg || "https://via.placeholder.com/300x170?text=No+Preview"}')`;
 
+    // ✅ Optional ▶ play icon
+    if(g.youtube){
+      const play = document.createElement("div");
+      play.innerHTML = "▶";
+      play.style.position = "absolute";
+      play.style.top = "50%";
+      play.style.left = "50%";
+      play.style.transform = "translate(-50%, -50%)";
+      play.style.fontSize = "36px";
+      play.style.color = "white";
+      play.style.pointerEvents = "none";
+
+      cover.style.position = "relative";
+      cover.appendChild(play);
+    }
+
+    // ✅ Title
     const title = document.createElement("div");
     title.className = "title";
     title.textContent = g.name;
 
+    // ✅ Platforms
     const plats = document.createElement("div");
     plats.className = "platforms";
-    plats.textContent = (g.platforms || []).map(p=>platformDisplayName(p)).join(" | ").toUpperCase();
+    plats.textContent = (g.platforms || [])
+      .map(p => platformDisplayName(p))
+      .join(" | ")
+      .toUpperCase();
 
+    // ✅ Status
     const status = document.createElement("div");
-    status.className = "status " + (g.status==="Finished"?"finished":g.status==="In Progress"?"progress":"none");
+    status.className = "status " +
+      (g.status==="Finished" ? "finished" :
+       g.status==="In Progress" ? "progress" : "none");
     status.textContent = g.status || "";
 
+    // ✅ Append
     card.appendChild(cover);
     card.appendChild(title);
     card.appendChild(plats);
@@ -489,12 +522,16 @@ cover.style.backgroundImage =
 
     frag.appendChild(card);
   }
+
   grid.appendChild(frag);
 
+  // ✅ Click handling
   grid.querySelectorAll(".card").forEach(card=>{
     card.addEventListener("click", onCardClick);
     card.addEventListener("keydown", (e)=>{
-      if(e.key === "Enter" || e.key === " ") onCardClick.call(card, e);
+      if(e.key === "Enter" || e.key === " ") {
+        onCardClick.call(card, e);
+      }
     });
   });
 }
