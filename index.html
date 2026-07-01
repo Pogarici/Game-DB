@@ -16,16 +16,14 @@ body{
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(6,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:12px;
 }
-@media(max-width:1200px){ .grid{grid-template-columns:repeat(3,1fr);} }
 
 .card{
   background:#1a1a1a;
   border-radius:12px;
   overflow:hidden;
-  cursor:pointer;
 }
 
 .cover{
@@ -35,20 +33,20 @@ body{
   position:relative;
 }
 
-.title{ padding:8px; font-size:13px; }
-
+.title{
+  padding:8px;
+  font-size:13px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>🎮 Game Library (TEST)</h2>
+<h2>🎮 Game Library</h2>
 
 <div class="grid" id="grid"></div>
 
 <script>
-
-// ✅ TEST DATA (replace with your JSON later)
 const games = [
   {
     name:"A Plague Tale: Innocence",
@@ -56,8 +54,7 @@ const games = [
   }
 ];
 
-// ✅ RENDER
-function renderGrid(){
+function render(){
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
@@ -72,7 +69,7 @@ function renderGrid(){
     let vid = null;
 
     if(g.youtube){
-      const match = g.youtube.match(/(?:v=|\\.be\\/)([^&]+)/);
+      const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/); // ✅ FIXED REGEX
       vid = match ? match[1] : null;
     }
 
@@ -80,12 +77,9 @@ function renderGrid(){
       cover.style.backgroundImage = `url('https://img.youtube.com/vi/${vid}/hqdefault.jpg')`;
     }
 
-    // ✅ PLAY BUTTON
     if(vid){
-
       const play = document.createElement("div");
       play.innerHTML = "▶";
-
       play.style.position = "absolute";
       play.style.top = "50%";
       play.style.left = "50%";
@@ -96,25 +90,20 @@ function renderGrid(){
       play.addEventListener("click", (e)=>{
         e.stopPropagation();
 
-        // remove all videos
         document.querySelectorAll(".cover").forEach(c=>{
           c.innerHTML="";
         });
 
         play.remove();
 
-        // ✅ inject VALID iframe
         cover.innerHTML = `
           <iframe
             width="100%"
             height="100%"
-            src="https://www.youtube.com/embed/${vid}?autoplay=1("iframe");
-
-        // ✅ pause on click (NO RELOAD)
-        cover.onclick = (ev)=>{
-          ev.stopPropagation();
-
-          iframe.contentWindow.postMessage(JSON.stringify({
+            src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&enablejsapi=1"
+            frameborder="0"
+            allow="autoplay; encrypted-media"
+            allowfullscreenndow.postMessage(JSON.stringify({
             event:"command",
             func:"pauseVideo"
           }), "*");
@@ -135,8 +124,8 @@ function renderGrid(){
   });
 }
 
-renderGrid();
-
+render();
 </script>
+
 </body>
 </html>
