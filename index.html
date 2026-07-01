@@ -738,6 +738,8 @@ function showGridView(){
   table.style.display = "none";
   gridBtn.classList.add("active");
   tableBtn.classList.remove("active");
+  
+  render(); // ✅ ⭐ SHOULD FIX SECOND TIME PLAY
 }
 function showTableView(){
   grid.style.display = "none";
