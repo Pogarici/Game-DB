@@ -475,17 +475,50 @@ function renderGrid(list){
     // ✅ YouTube thumbnail logic
     let bg = g.cover;
 
-    if(g.youtube){
-      const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
-      const vid = match ? match[1] : null;
+   if(g.youtube){
+  const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
+  const vid = match ? match[1] : null;
+  if(!vid) return;
 
-      if(vid){
-        bg = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
-      }
-    }
+  cover.style.position = "relative";
+  cover.style.cursor = "pointer";
 
-    cover.style.backgroundImage =
-      `url('${bg || "https://via.placeholder.com/300x170?text=No+Preview"}')`;
+  cover.innerHTML = `
+    <iframe
+      class="yt-video"
+      src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&controls=1&playsinline=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+    <div class="cover-overlay"></div>
+  `;
+
+  const overlay = cover.querySelector(".cover-overlay");
+
+  overlay.style.position = "absolute";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundImage = `url('${bg}')`;
+  overlay.style.backgroundSize = "cover";
+  overlay.style.backgroundPosition = "center";
+  overlay.style.zIndex = "2";
+
+  const iframe = cover.querySelector(".yt-video");
+  iframe.style.position = "absolute";
+  iframe.style.top = "0";
+  iframe.style.left = "0";
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.zIndex = "1";
+
+  overlay.addEventListener("click", (e) => {
+    e.stopPropagation();
+    overlay.style.display = "none"; // reveal already-playing iframe
+  });
+}
 
     // ✅ Optional ▶ play icon
      if(g.youtube){
