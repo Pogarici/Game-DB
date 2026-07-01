@@ -516,8 +516,12 @@ function renderGrid(list){
   iframe.style.zIndex = "1";
 
   
+
 overlay.addEventListener("click", (e) => {
   e.stopPropagation();
+  overlay.style.pointerEvents = "none";
+  overlay.style.display = "none";
+});
 
   // ✅ CRITICAL: let tap go THROUGH to iframe
   overlay.style.pointerEvents = "none";
