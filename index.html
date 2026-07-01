@@ -515,11 +515,21 @@ function renderGrid(list){
   iframe.style.height = "100%";
   iframe.style.zIndex = "1";
 
-  overlay.addEventListener("click", (e) => {
-    e.stopPropagation();
-    overlay.style.display = "none"; // reveal already-playing iframe
-  });
-}
+  
+overlay.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  // ✅ CRITICAL: let tap go THROUGH to iframe
+  overlay.style.pointerEvents = "none";
+
+  // ✅ optional: fade out (can remove if you want instant)
+  overlay.style.opacity = "0";
+
+  setTimeout(() => {
+    overlay.style.display = "none";
+  }, 150);
+});
+
 
     // ✅ Optional ▶ play icon
      if(g.youtube){
