@@ -521,9 +521,16 @@ function renderGrid(list){
 
   // ✅ inject iframe with JS API enabled
   cover.innerHTML = `
-    https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&enablejsapi=1
-    </iframe>
-  `;
+   
+<iframe
+    width="100%"
+    height="100%"
+    src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&enablejsapi=1"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
+`;
 
   const iframe = cover.querySelector("iframe");
 
