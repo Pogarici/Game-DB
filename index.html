@@ -518,8 +518,10 @@ function renderGrid(list){
 
   // stop other videos
 document.querySelectorAll(".cover").forEach(c => {
-  c.innerHTML = "";
+  const iframe = c.querySelector("iframe");
+  if (iframe) iframe.remove();
 });
+
     
  // inject iframe
     cover.innerHTML = `
