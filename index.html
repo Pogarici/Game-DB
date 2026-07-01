@@ -488,6 +488,21 @@ function renderGrid(list){
       `url('${bg || "https://via.placeholder.com/300x170?text=No+Preview"}')`;
 
     // ✅ Optional ▶ play icon
+     if(g.youtube){
+  const play = document.createElement("div");
+  play.innerHTML = "";
+
+  play.style.position = "absolute";
+  play.style.top = "50%";
+  play.style.left = "50%";
+  play.style.transform = "translate(-50%, -50%)";
+  play.style.fontSize = "36px";
+  play.style.color = "white";
+  play.style.cursor = "pointer";
+  play.style.zIndex = "5";
+
+  cover.style.position = "relative"
+
     
     // ✅ CLICK → PLAY VIDEO
   play.addEventListener("click", (e) => {
