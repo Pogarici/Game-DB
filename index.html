@@ -508,6 +508,8 @@ function renderGrid(list){
   play.addEventListener("click", (e) => {
     e.stopPropagation(); // ❗ IMPORTANT (prevents card click)
 
+    const originalBg = cover.style.backgroundImage; // ✅ SAVING THUMBNAIL
+    
     const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
     const vid = match ? match[1] : null;
     if(!vid) return;
@@ -534,9 +536,12 @@ document.querySelectorAll(".cover").forEach(c => {
 // ✅ restore thumbnail when clicking video
   cover.addEventListener("click", (e) => {
     e.stopPropagation();
-    cover.innerHTML = "";
-    cover.style.backgroundImage = `url('${thumbnailBg}')`;
-  });
+    
+const iframe = cover.querySelector("iframe");
+  if (iframe) iframe.remove(); // ✅ remove only video
+
+  cover.style.backgroundImage = originalBg; // ✅ restore cover
+});
     
     // re-add play button
     
@@ -650,9 +655,12 @@ function onCardClick(e){
 
   
  // ✅ STOP ALL VIDEOS FIRST (ADD THIS BLOCK)
-  document.querySelectorAll(".cover").forEach(c=>{
-    c.innerHTML = "";
-  });
+ 
+document.querySelectorAll(".cover").forEach(c => {
+  const iframe = c.querySelector("iframe");
+  if (iframe) iframe.remove();
+});
+
 
   const idx = Number(this.dataset.index);
   if(Number.isNaN(idx)) return;
