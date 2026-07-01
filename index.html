@@ -487,8 +487,9 @@ function renderGrid(list){
     cover.style.backgroundImage =
       `url('${bg || "https://via.placeholder.com/300x170?text=No+Preview"}')`;
 
-    // ✅ Optional ▶ play icon
-    if(g.youtube){
+// ✅ Optional ▶ play icon
+if (g.youtube) {
+
   const play = document.createElement("div");
   play.innerHTML = "▶";
 
@@ -503,49 +504,49 @@ function renderGrid(list){
 
   cover.style.position = "relative";
 
-  // ✅ CLICK → PLAY VIDEO
- play.addEventListener("click", (e) => {
-  e.stopPropagation();
+  play.addEventListener("click", (e) => {
+    e.stopPropagation();
 
-  const match = g.youtube.match(/(?:v=|\.be\/)([^&]+)/);
-  const vid = match ? match[1] : null;
-  if(!vid) return;
+    const match = g.youtube.match(/(?:v=|\\.be\\/)([^&]+)/);
+    const vid = match ? match[1] : null;
+    if (!vid) return;
 
-  // ✅ stop other videos
-  document.querySelectorAll(".cover").forEach(c => {
-    c.innerHTML = "";
+    // ✅ stop all other videos
+    document.querySelectorAll(".cover").forEach(c => {
+      c.innerHTML = "";
+    });
+
+    // ✅ remove play button
+    play.remove();
+
+    // ✅ inject working iframe
+    cover.innerHTML = `
+      <iframe
+        width="100%"
+        height="100%"
+        src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&enablejsapi=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+    `;
+
+    const iframe = cover.querySelector("iframe");
+
+    // ✅ pause on click (no restart)
+    cover.onclick = (ev) => {
+      ev.stopPropagation();
+
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: "command",
+        func: "pauseVideo"
+      }), "*");
+    };
   });
 
-  // ✅ REMOVE PLAY BUTTON (so it doesn't stay visible)
-  play.remove();
-
-  // ✅ inject iframe with JS API enabled
-  cover.innerHTML = `
-   
-<iframe
-    width="100%"
-    height="100%"
-    src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&enablejsapi=1"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen>
-  </iframe>
-`;
-
-  const iframe = cover.querySelector("iframe");
-
-  // ✅ toggle pause/play on click (NO restart)
-  cover.onclick = (ev) => {
-    ev.stopPropagation();
-
-    iframe.contentWindow.postMessage(JSON.stringify({
-      event: "command",
-      func: "pauseVideo"
-    }), "*");
-  };
-});
-
-
+  // ✅ show play button initially ONLY
+  cover.appendChild(play);
+}
     // ✅ Title
     const title = document.createElement("div");
     title.className = "title";
