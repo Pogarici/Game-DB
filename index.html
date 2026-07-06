@@ -489,8 +489,9 @@ function renderGrid(list){
 
     // ✅ Optional ▶ play icon
      if(g.youtube){
-  const play = document.createElement("div");
-  play.innerHTML = "▶";
+ const play = document.createElement("div");
+play.className = "playButton";
+play.innerHTML = "▶";
 
   play.style.position = "absolute";
   play.style.top = "50%";
@@ -519,31 +520,62 @@ function renderGrid(list){
   // stop other videos
 document.querySelectorAll(".cover").forEach(c => {
   const iframe = c.querySelector("iframe");
-  if (iframe) iframe.remove();
+
+  if (iframe) {
+    iframe.remove();
+  }
+
+  const playBtn = c.querySelector(".playButton");
+
+  if (playBtn) {
+    playBtn.style.display = "block";
+  }
 });
 
     
- // inject iframe
-    cover.innerHTML = `
-      <iframe
-        width="100%"
-        height="100%"
-        src="https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&controls=1"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-    `;
-    
-// ✅ restore thumbnail when clicking video
-  cover.addEventListener("click", (e) => {
-    e.stopPropagation();
-    
-const iframe = cover.querySelector("iframe");
-  if (iframe) iframe.remove(); // ✅ remove only video
+// Remove any existing iframe first
+const existingIframe = cover.querySelector("iframe");
+if (existingIframe) {
+  existingIframe.remove();
+}
 
-  cover.style.backgroundImage = originalBg; // ✅ restore cover
-});
+// Create iframe WITHOUT destroying cover contents
+const iframe = document.createElement("iframe");
+
+iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&controls=1`;
+iframe.width = "100%";
+iframe.height = "100%";
+iframe.frameBorder = "0";
+iframe.allow = "autoplay; encrypted-media";
+iframe.allowFullscreen = true;
+
+iframe.style.position = "absolute";
+iframe.style.top = "0";
+iframe.style.left = "0";
+iframe.style.width = "100%";
+iframe.style.height = "100%";
+iframe.style.zIndex = "10";
+
+cover.style.position = "relative";
+
+// Hide play button while video is playing
+play.style.display = "none";
+
+cover.appendChild(iframe);
+
+// Restore thumbnail when tapping video
+cover.onclick = (e) => {
+  e.stopPropagation();
+
+  const activeIframe = cover.querySelector("iframe");
+
+  if (activeIframe) {
+    activeIframe.remove();
+  }
+
+  play.style.display = "block";
+  cover.style.backgroundImage = originalBg;
+};
     
     // re-add play button
     
