@@ -816,49 +816,32 @@ async function loadGameList(){
   }
 }
 
-/* Trigger GitHub Actions workflow */
+/* Trigger GitHub Actions workflow through Cloudflare */
 async function triggerWorkflow(){
-  const PAT = localStorage.getItem("github_pat");
-  if(!PAT){
-    updateBtn.textContent = "Setup Required";
-    const token = prompt("Enter your GitHub Personal Access Token (with 'repo' and 'workflow' scopes):");
-    if(!token){
-      updateBtn.textContent = "Update Library";
-      return false;
-    }
-    localStorage.setItem("github_pat", token);
-  }
 
   try{
-    const token = localStorage.getItem("github_pat");
-    const owner = "Pogarici";
-    const repo = "Game-DB";
-    const workflow = "update-gamelist.yml";
-    const branch = "main";
 
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow}/dispatches`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "Accept": "application/vnd.github.v3+json"
-      },
-      body: JSON.stringify({
-        ref: branch
-      })
-    });
+    const response = await fetch(
+      "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev/update",
+      {
+        method: "POST"
+      }
+    );
 
     if(!response.ok){
       const errorData = await response.text();
-      console.error("Workflow trigger failed:", response.status, errorData);
+      console.error("Worker failed:", response.status, errorData);
       throw new Error(`HTTP ${response.status}`);
     }
 
-    console.log("Workflow triggered successfully!");
+    console.log("Workflow triggered through Cloudflare!");
     return true;
+
   }catch(err){
+
     console.error("Trigger failed", err);
     return false;
+
   }
 }
 
