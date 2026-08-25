@@ -317,7 +317,7 @@ function convertRow(row){
   const name = row["Game"] || row["game"] || row["Name"] || row["name"] || "Unknown";
   const pog = truthy(row["Pogarici"]);
   const bat = truthy(row["Batman"]);
-  const status = row["Status"] || row["status"] || "";
+  const status = row["Status"] || row["status"] || row["STATUS"] || "";
   const date = row["DATE OF ENTRY"] || row["Date"] || row["date"] || "";
   const releaseDate =
 row["RELEASE DATE"] ||
