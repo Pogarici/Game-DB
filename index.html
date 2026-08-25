@@ -166,6 +166,7 @@
       td[data-label="Batman"]::before{ content: "Batman"; }
       td[data-label="Status"]::before{ content: "Status"; }
       td[data-label="Date Added"]::before{ content: "Date Added"; }
+    td[data-label="Release Date"]::before{ content: "Release Date"; }
   }
 
 .sticky-top{
@@ -261,6 +262,7 @@ table thead {
 <th>Batman</th>
 <th>Status</th>
 <th>Date Added</th>
+<th>Release Date</th>
 </tr>
 </thead>
 <tbody id="tbody"></tbody>
@@ -317,6 +319,13 @@ function convertRow(row){
   const bat = truthy(row["Batman"]);
   const status = row["Status"] || row["status"] || "";
   const date = row["DATE OF ENTRY"] || row["Date"] || row["date"] || "";
+  const releaseDate =
+row["RELEASE DATE"] ||
+row["Release Date"] ||
+row["release date"] ||
+row["Release"] ||
+row["release"] ||
+"";
   const youtube =
   row["youtube"] ||
   row["YouTube"] ||
@@ -368,7 +377,8 @@ function convertRow(row){
     pogariciPlatforms,
     batmanPlatforms,
     status,
-    date
+    date,
+    releaseDate
   };
 }
 
@@ -665,12 +675,16 @@ function renderTable(list){
     const tdDate = document.createElement("td");
     tdDate.setAttribute("data-label","Date Added");
     tdDate.textContent = g.date || "";
+    const tdReleaseDate = document.createElement("td");
+tdReleaseDate.setAttribute("data-label","Release Date");
+tdReleaseDate.textContent = g.releaseDate || "";
 
     row.appendChild(tdGame);
     row.appendChild(tdPog);
     row.appendChild(tdBat);
     row.appendChild(tdStatus);
     row.appendChild(tdDate);
+    row.appendChild(tdReleaseDate);
 
     frag.appendChild(row);
   }
