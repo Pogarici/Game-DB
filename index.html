@@ -124,6 +124,7 @@
   }
 
   .title{ font-size:13px; font-weight:bold; padding:8px; }
+  .genre{padding:0 8px 4px;font-size:11px;color:#8ab4ff;font-style:italic; }
   .platforms{ padding:0 8px 6px; font-size:11px; color:#bbb; }
   .status{ font-size:11px; padding:0 8px 10px; }
   .finished{color:#4ade80;font-size:14px;font-weight:bold;}
@@ -326,6 +327,11 @@ row["release date"] ||
 row["Release"] ||
 row["release"] ||
 "";
+  const genre =
+row["GENRE"] ||
+row["Genre"] ||
+row["genre"] ||
+"";
   const youtube =
   row["youtube"] ||
   row["YouTube"] ||
@@ -378,7 +384,8 @@ row["release"] ||
     batmanPlatforms,
     status,
     date,
-    releaseDate
+    releaseDate,
+    genre
   };
 }
 
@@ -599,6 +606,11 @@ cover.onclick = (e) => {
     title.className = "title";
     title.textContent = g.name;
 
+    //Genre
+    const genre = document.createElement("div");
+    genre.className = "genre";
+    genre.textContent = g.genre || "";
+
     // ✅ Platforms
     const plats = document.createElement("div");
     plats.className = "platforms";
@@ -617,6 +629,7 @@ cover.onclick = (e) => {
     // ✅ Append
     card.appendChild(cover);
     card.appendChild(title);
+    card.appendChild(genre);
     card.appendChild(plats);
     card.appendChild(status);
 
