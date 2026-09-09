@@ -147,19 +147,16 @@
 
   /* Blue Color for Genre table view, just 1 line */
   .genre-cell{color:#8ab4ff;font-weight:bold;}
- 
-  /* row highlight */ 
-.row-highlight{
-      animation: highlightFlash 1.5s ease-in-out;
+  
+  .row-highlight{
+      animation: highlightFlash 1.5s ease-in-out infinite;
       box-shadow:0 0 18px rgba(88,101,242,0.35) inset;
-      background: linear-gradient(90deg, rgba(88,101,242,0.12), rgba(88,101,242,0.06));
-}
- 
-@keyframes highlightFlash{
-0%{ background: rgba(88,101,242,0.25); }
-50%{ background: rgba(88,101,242,0.13); }
-100%{ background: rgba(88,101,242,0.00); }
-}
+  }
+  @keyframes highlightFlash{
+      0%{ background: rgba(88,101,242,0.12); }
+      50%{ background: rgba(88,101,242,0.04); }
+      100%{ background: rgba(88,101,242,0.00); }
+  }
 
   @media(max-width:700px){
       table, thead, tbody, th, td, tr { display:block; }
@@ -741,12 +738,20 @@ document.querySelectorAll(".cover").forEach(c => {
   if(Number.isNaN(idx)) return;
   showTableView();
 
-  setTimeout(() => {
-row.classList.remove("row-highlight");
-lastHighlightedRowId = null;
-}, 3000);
+  setTimeout(()=>{
+    const rowId = `row-${idx}`;
+    const row = document.getElementById(rowId);
+    if(row){
+      if(lastHighlightedRowId){
+        const prev = document.getElementById(lastHighlightedRowId);
+        if(prev) prev.classList.remove("row-highlight");
+      }
+      row.classList.add("row-highlight");
+      lastHighlightedRowId = rowId;
+      row.scrollIntoView({behavior:"smooth", block:"center"});
+    }
+  }, 120);
 }
-  
 /* Clear the Highlight */
   function clearHighlight(){
 if(lastHighlightedRowId){
@@ -949,9 +954,8 @@ clearHighlight();
   
   /* Load on page load */
 window.addEventListener("DOMContentLoaded", loadGameList);
-/* This will enable highlight disappear on scroll or wheel
 window.addEventListener("wheel", clearHighlight, { passive:true });
-window.addEventListener("scroll", clearHighlight); */
+window.addEventListener("scroll", clearHighlight);
 
 </script>
 </body>
