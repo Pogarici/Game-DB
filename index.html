@@ -145,6 +145,9 @@
   }
   th{ background:#1c1c1c; font-weight:600; }
 
+  /* Blue Color for Genre table view, just 1 line */
+  .genre-cell{color:#8ab4ff;font-weight:bold;}
+  
   .row-highlight{
       animation: highlightFlash 2.5s ease-in-out;
       box-shadow:0 0 18px rgba(88,101,242,0.25) inset;
@@ -261,6 +264,7 @@ table thead {
 <thead>
 <tr>
 <th>Game</th>
+<th>Genre</th>
 <th>Pogarici</th>
 <th>Batman</th>
 <th>Status</th>
@@ -667,6 +671,7 @@ function renderTable(list){
     tdGame.textContent = g.name;
 
     const tdGenre = document.createElement("td");
+    tdGenre.className = "genre-cell";
     tdGenre.setAttribute("data-label","Genre");
     tdGenre.textContent = g.genre || "";
 
