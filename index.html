@@ -154,25 +154,16 @@ overflow: hidden;
 background: rgba(88,101,242,0.10);
 }
  
-.row-highlight::after{
-content:"";
-position:absolute;
-inset:0;
- 
-background:linear-gradient(
-90deg,
-transparent 0%,
-rgba(88,101,242,0.90) 50%,
-transparent 100%
-);
- 
-transform:translateX(-100%);
-animation:waterFlow 1.5s ease-out forwards;
+.row-highlight{
+      animation: highlightFlash 3.0s ease-in-out;
+      box-shadow:0 0 18px rgba(88,101,242,0.35) inset;
+      background: linear-gradient(90deg, rgba(88,101,242,0.2), rgba(88,101,242,0.1));
 }
  
-@keyframes waterFlow{
-to{
-transform:translateX(100%);
+@keyframes highlightFlash{
+0%{ background: rgba(88,101,242,0.25); }
+50%{ background: rgba(88,101,242,0.13); }
+100%{ background: rgba(88,101,242,0.00); }
 }
 }
 
