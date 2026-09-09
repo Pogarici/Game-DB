@@ -149,7 +149,7 @@
   .genre-cell{color:#8ab4ff;font-weight:bold;}
   
   .row-highlight{
-      animation: highlightFlash 0,7s ease-in-out forwards;
+      animation: highlightFlash 0.45s ease-in-out forwards;
       box-shadow:0 0 18px rgba(88,101,242,0.20) inset;
   }
 @keyframes highlightFlow{
@@ -157,12 +157,16 @@
 background: rgba(88,101,242,0);
 }
  
-30%{
+33%{
 background: rgba(88,101,242,0.15);
+}
+
+66%{
+background: rgba(88,101,242,0.33);
 }
  
 100%{
-background: rgba(88,101,242,0.03);
+background: rgba(88,101,242,0.10);
 }
 }
 
