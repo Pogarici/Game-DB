@@ -163,6 +163,8 @@
       td { padding:6px 0; }
       td::before { font-weight:600; display:block; color:#888; margin-bottom:4px; }
       td[data-label="Game"]::before{ content: "Game"; }
+      td[data-label="Genre"]::before{ content: "Genre"; }
+      td[data-label="Genre"]{ color:#8ab4ff; font-weight:bold; }
       td[data-label="Pogarici"]::before{ content: "Pogarici"; }
       td[data-label="Batman"]::before{ content: "Batman"; }
       td[data-label="Status"]::before{ content: "Status"; }
@@ -664,6 +666,10 @@ function renderTable(list){
     tdGame.setAttribute("data-label","Game");
     tdGame.textContent = g.name;
 
+    const tdGenre = document.createElement("td");
+    tdGenre.setAttribute("data-label","Genre");
+    tdGenre.textContent = g.genre || "";
+
     const pogPlatforms = (g.pogariciPlatforms && g.pogariciPlatforms.length)
       ? g.pogariciPlatforms.map(p=>platformDisplayName(p)).join(" | ")
       : "-";
@@ -693,6 +699,7 @@ tdReleaseDate.setAttribute("data-label","Release Date");
 tdReleaseDate.textContent = g.releaseDate || "";
 
     row.appendChild(tdGame);
+    row.appendChild(tdGenre);
     row.appendChild(tdPog);
     row.appendChild(tdBat);
     row.appendChild(tdStatus);
