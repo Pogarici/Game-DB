@@ -149,24 +149,30 @@
   .genre-cell{color:#8ab4ff;font-weight:bold;}
   
   .row-highlight{
-      animation: highlightFlash 1.0s ease-in-out forwards;
-      box-shadow:0 0 18px rgba(88,101,242,0.20) inset;
-  }
-@keyframes highlightFlow{
-0%{
-background: rgba(88,101,242,0.03);
+position: relative;
+overflow: hidden;
+background: rgba(88,101,242,0.08);
 }
  
-30%{
-background: rgba(88,101,242,0.25);
-}
-
-65%{
-background: rgba(88,101,242,0.45);
+.row-highlight::after{
+content:"";
+position:absolute;
+inset:0;
+ 
+background:linear-gradient(
+90deg,
+transparent 0%,
+rgba(88,101,242,0.60) 50%,
+transparent 100%
+);
+ 
+transform:translateX(-100%);
+animation:waterFlow 0.35s ease-out forwards;
 }
  
-100%{
-background: rgba(88,101,242,0.05);
+@keyframes waterFlow{
+to{
+transform:translateX(100%);
 }
 }
 
