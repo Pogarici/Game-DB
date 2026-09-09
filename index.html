@@ -954,8 +954,9 @@ clearHighlight();
   
   /* Load on page load */
 window.addEventListener("DOMContentLoaded", loadGameList);
-/*window.addEventListener("wheel", clearHighlight, { passive:true });*/
-window.addEventListener("scroll", clearHighlight);
+/* This will enable highlight disappear on scroll or wheel
+window.addEventListener("wheel", clearHighlight, { passive:true });
+window.addEventListener("scroll", clearHighlight); */
 
 </script>
 </body>
