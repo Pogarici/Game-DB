@@ -34,16 +34,16 @@ jobs:
             cat "$TMP.body" || true
             exit 1
           fi
-
-        # Check if response looks like JSON
-        if ! head -c 100 "$TMP.body" | grep -q '{'; then background: 
-          echo "ERROR: Response doesn't look like JSON"
+          
+          # Check if response looks like JSON
+          if ! head -c 100 "$TMP.body" | grep -q '{'; then
+            echo "ERROR: Response doesn't look like JSON"
             head -c 1000 "$TMP.body" || true
             exit 1
-        fi
-      
-        mv "$TMP.body" gamelist.json
-        rm -f "$TMP.headers"
+          fi
+          
+          mv "$TMP.body" gamelist.json
+          rm -f "$TMP.headers"
 
       - name: Validate JSON
         run: |
